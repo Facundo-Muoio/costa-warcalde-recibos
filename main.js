@@ -102,5 +102,10 @@ const table = $("#tablaMensuales").DataTable({
 			orderable: false,
 			width: "80px",
 		},
+		{data: null, 
+		defaultContent: "<button class='btn btn-primary'>edit</button><button class='btn btn-danger'>eliminar</button>",
+		orderable: false,
+		width: "100px"
+		}
 	],
 });
