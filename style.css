@@ -1,0 +1,9 @@
+a {
+	color: #7b151c;
+}
+
+.accordion-button:focus {
+	border-color: none !important;
+	outline: 0;
+	box-shadow: none !important;
+}

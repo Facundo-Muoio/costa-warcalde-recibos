@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Recibos Costa Warcalde</title>
+
+		<!-- dataTables CDN -->
+
+		<link
+			href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.6/datatables.min.css"
+			rel="stylesheet"
+		/>
+
+		<!-- bootstrap CDN -->
+
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+			crossorigin="anonymous"
+		/>
+
+		<!-- mi css -->
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div class="alert alert-danger" role="alert" id="alertMensuales" hidden>
+			<h4>Uups! tenemos un problema.</h4>
+			<p>
+				La tabla no pudo generarse con éxito debido a que el archivo de excel
+				subido no cumple los requisitos necesarios.
+			</p>
+			<p>
+				Puede
+				<strong
+					><em><a href="#inputExcel">intentar nuevamente</a></em></strong
+				>
+				subiendo un archivo excel que cumpla con los siguientes requerimientos:
+			</p>
+			<ol>
+				<div class="accordion my-3" id="accordionErrors">
+					<li>
+						<div class="accordion-item">
+							<h2 class="accordion-header">
+								<button
+									class="accordion-button collapsed bg-warning"
+									type="button"
+									data-bs-toggle="collapse"
+									data-bs-target="#collapseOne"
+									aria-expanded="false"
+									aria-controls="collapseOne"
+								>
+									<span
+										>La tabla de excel debe contener los siguientes
+										<strong><em> encabezados en mayúsculas:</em></strong></span
+									>
+								</button>
+							</h2>
+							<div id="collapseOne" class="accordion-collapse collapse">
+								<div class="accordion-body">
+									<img
+										class="my-3"
+										src="./imagenes/encabezadosTabla.png"
+										alt="encabezados de la tabla"
+									/>
+								</div>
+							</div>
+						</div>
+					</li>
+
+					<li>
+						<div class="accordion-item">
+							<h2 class="accordion-header">
+								<button
+									class="accordion-button collapsed bg-warning"
+									type="button"
+									data-bs-toggle="collapse"
+									data-bs-target="#collaspseTwo"
+									aria-expanded="false"
+									aria-controls="collaspseTwo"
+								>
+									<span>
+										En las columnas de NOMBRE, DNI, FECHA y TOTAL
+										<strong
+											><em>nunca pueden encontrarse celdas vacías.</em></strong
+										></span
+									>
+								</button>
+							</h2>
+							<div id="collaspseTwo" class="accordion-collapse collapse">
+								<div class="accordion-body">
+									<img
+										class="my-3"
+										src="./imagenes/casillerosObligatorios.png"
+										alt="celdas obligatorias"
+									/>
+								</div>
+							</div>
+						</div>
+					</li>
+
+					<li>
+						<div class="accordion-item">
+							<h2 class="accordion-header">
+								<button
+									class="accordion-button collapsed bg-warning"
+									type="button"
+									data-bs-toggle="collapse"
+									data-bs-target="#collapseThree"
+									aria-expanded="false"
+									aria-controls="collapseThree"
+								>
+									<span>
+										El <strong><em>formato de las columnas</em></strong> debe
+										corresponderse como se señala a continuación:</span
+									>
+								</button>
+							</h2>
+							<div id="collapseThree" class="accordion-collapse collapse">
+								<div class="accordion-body">
+									<img
+										class="my-3"
+										src="./imagenes/formatoTabla.png"
+										alt="formatos de la tabla"
+									/>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="accordion-item">
+							<h2 class="accordion-header">
+								<button
+									class="accordion-button collapsed bg-warning"
+									type="button"
+									data-bs-toggle="collapse"
+									data-bs-target="#collaspseFour"
+									aria-expanded="false"
+									aria-controls="collaspseFour"
+								>
+									<span
+										>Si el archivo de excel cuenta con muchas hojas,
+										<strong
+											><em
+												>el programa siempre leera el contenido de la primer
+												hoja</em
+											></strong
+										>. Por lo cual siempre la tabla que desee leer debera
+										hallarse en la hoja número uno.</span
+									>
+								</button>
+							</h2>
+							<div id="collaspseFour" class="accordion-collapse collapse">
+								<div class="accordion-body">
+									<img
+										class="my-3"
+										src="./imagenes/hojasTabla.png"
+										alt="hojas del libro"
+									/>
+								</div>
+							</div>
+						</div>
+					</li>
+				</div>
+			</ol>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<input type="file" name="inputExcel" id="inputExcel" />
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<table
+						class="table-info table-striped table-bordered table-hover"
+						id="tablaMensuales"
+					>
+						<thead>
+							<tr>
+								<th>NOMBRE</th>
+								<th>DNI</th>
+								<th>FECHA</th>
+								<th>HABERES MES</th>
+								<th>HORAS EXTRAS</th>
+								<th>FERIADO</th>
+								<th>VACACIONES</th>
+								<th>ALMUERZO</th>
+								<th>ADELANTO</th>
+								<th>VACACIONES TOMADAS</th>
+								<th>AGUINALDO</th>
+								<th>TOTAL</th>
+								<th>
+									<input
+										type="checkbox"
+										name="checkboxControl"
+										id="checkboxControl"
+									/>
+								</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<!-- script jquery -->
+
+		<script
+			src="https://code.jquery.com/jquery-3.7.1.min.js"
+			integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+			crossorigin="anonymous"
+		></script>
+
+		<!-- script dataTables -->
+
+		<script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.6/datatables.min.js"></script>
+
+		<!-- script bootstrap -->
+
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+			crossorigin="anonymous"
+		></script>
+
+		<!-- CDN Read Excel File  -->
+
+		<script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script>
+
+		<!-- Mis javaScript  -->
+
+		<script src="main.js" type="module"></script>
+		<script src="events.js"></script>
+	</body>
+</html>
