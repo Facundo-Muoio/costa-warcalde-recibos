@@ -27,10 +27,21 @@ function readExcel(input, schema) {
 	});
 }
 
+function inputChecks(element) {
+	let checkboxes = document.querySelectorAll(
+		"table > tbody > tr > td:nth-child(13) > input"
+	);
+	if (element.checked) {
+		checkboxes.forEach(e => (e.checked = true));
+	} else {
+		checkboxes.forEach(e => (e.checked = false));
+	}
+}
+
 function renderRow(rowIndex, updatedData) {
 	let row = table.row(rowIndex);
 	row.data(updatedData);
 	table.draw();
 }
 
-export { saveInLocalStorage, getFromLocalStorage, readExcel };
+export { saveInLocalStorage, getFromLocalStorage, readExcel, inputChecks };

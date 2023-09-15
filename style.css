@@ -7,3 +7,12 @@ a {
 	outline: 0;
 	box-shadow: none !important;
 }
+
+#tablaMensuales td input[type="checkbox"] {
+	margin: 16px;
+}
+
+#tablaMensuales tbody tr td:last-child {
+	display: flex;
+	height: 50px;
+}
