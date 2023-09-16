@@ -3,6 +3,7 @@ import {
 	saveInLocalStorage,
 	getFromLocalStorage,
 	readExcel,
+	generateUniqId,
 } from "./funciones.js";
 
 let arrayMensuales;
@@ -73,6 +74,7 @@ const $inputExcel = document.getElementById("inputExcel");
 
 $inputExcel.addEventListener("change", async e => {
 	arrayMensuales = await readExcel($inputExcel, mensualesSchema);
+	arrayMensuales.map(e => (e.id = generateUniqId(e.DNI)));
 	if (arrayMensuales === false) {
 		document.getElementById("alertMensuales").hidden = false;
 	} else {
@@ -85,6 +87,7 @@ const table = $("#tablaMensuales").DataTable({
 	data: arrayMensuales,
 	columns: [
 		{ data: "NOMBRE" },
+		{ data: "id", visible: false },
 		{ data: "DNI" },
 		{ data: "FECHA" },
 		{ data: "HABERES MES" },
@@ -98,9 +101,9 @@ const table = $("#tablaMensuales").DataTable({
 		{ data: "TOTAL" },
 		{
 			data: null,
-			defaultContent: "<input type='checkbox'></input>",
-			orderable: false,
-			width: "80px",
+			checkboxes: {
+				selectRow: true,
+			},
 		},
 		{
 			data: null,
@@ -110,4 +113,8 @@ const table = $("#tablaMensuales").DataTable({
 			width: "250px",
 		},
 	],
+	select: {
+		style: "multi",
+	},
+	order: [[1, "asc"]],
 });

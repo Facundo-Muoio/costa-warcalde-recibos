@@ -1,3 +1,5 @@
+let uniqueIdCounter = 0;
+
 function saveInLocalStorage(array, name) {
 	localStorage.setItem(name, JSON.stringify(array));
 	console.log("Guardado en localstorage.");
@@ -27,21 +29,16 @@ function readExcel(input, schema) {
 	});
 }
 
-function inputChecks(element) {
-	let checkboxes = document.querySelectorAll(
-		"table > tbody > tr > td:nth-child(13) > input"
-	);
-	if (element.checked) {
-		checkboxes.forEach(e => (e.checked = true));
-	} else {
-		checkboxes.forEach(e => (e.checked = false));
-	}
-}
-
 function renderRow(rowIndex, updatedData) {
 	let row = table.row(rowIndex);
 	row.data(updatedData);
 	table.draw();
 }
 
-export { saveInLocalStorage, getFromLocalStorage, readExcel, inputChecks };
+function generateUniqId(dni) {
+	const timestamp = new Date().getTime();
+	uniqueIdCounter++;
+	return `${dni}_${timestamp}_${uniqueIdCounter}`;
+}
+
+export { saveInLocalStorage, getFromLocalStorage, readExcel, generateUniqId };
