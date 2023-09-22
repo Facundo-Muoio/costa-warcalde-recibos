@@ -197,7 +197,6 @@
 						<thead>
 							<tr>
 								<th>NOMBRE</th>
-								<th class="text-center">ID</th>
 								<th>DNI</th>
 								<th>FECHA</th>
 								<th>HABERES MES</th>
@@ -211,10 +210,185 @@
 								<th>TOTAL</th>
 								<th class="text-center"></th>
 								<th>ACCIONES</th>
+								<th class="hidde">ID</th>
 							</tr>
 						</thead>
 						<tbody></tbody>
 					</table>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal de edicion -->
+
+		<!-- Modal -->
+		<div
+			class="modal fade"
+			id="modal_mensuales-edicion"
+			data-bs-backdrop="static"
+			data-bs-keyboard="false"
+			tabindex="-1"
+			aria-labelledby="staticBackdropLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">Edicion</h5>
+						<button
+							type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"
+						></button>
+					</div>
+					<div class="modal-body">
+						<form class="form" if="form_mensuales" novalidate>
+							<div class="form-floating mb-3">
+								<input
+									type="text"
+									class="form-control my-3"
+									id="nombre"
+									placeholder="Fabricio Coloccini"
+									name="NOMBRE"
+									required
+								/>
+								<label for="nombre">Nombre y Apellido</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input
+									type="number"
+									class="form-control mb-3"
+									id="dni"
+									placeholder="548215148"
+									name="DNI"
+									required
+								/>
+								<label for="dni">DNI</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input
+									type="date"
+									class="form-control mb-3"
+									id="fecha"
+									placeholder=""
+									name="FECHA"
+									required
+								/>
+								<label for="fecha">Fecha</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input
+									type="number"
+									class="form-control mb-3"
+									id="haberes_mes"
+									placeholder=""
+									name="HABERES MES"
+								/>
+								<label for="haberes_mes">Haberes mes</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input
+									type="number"
+									class="form-control mb-3"
+									id="horas_extras"
+									placeholder=""
+									name="HORAS EXTRAS"
+									value=""
+								/>
+								<label for="horas_extras">Horas extras</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input
+									type="number"
+									class="form-control mb-3"
+									id="feriado"
+									placeholder=""
+									name="FERIADO"
+								/>
+								<label for="feriado">Feriado</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input
+									type="number"
+									class="form-control mb-3"
+									id="vacaciones"
+									placeholder=""
+									name="VACACIONES"
+								/>
+								<label for="vacaciones">Vacaciones</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input
+									type="number"
+									class="form-control mb-3"
+									id="almuerzo"
+									placeholder=""
+									name="ALMUERZO"
+								/>
+								<label for="almuerzo">Almuerzo</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input
+									type="number"
+									class="form-control mb-3"
+									id="adelanto"
+									placeholder=""
+									name="ADELANTO"
+								/>
+								<label for="adelanto">Adelanto</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input
+									type="number"
+									class="form-control mb-3"
+									id="vacaciones_tomadas"
+									placeholder=""
+									name="VACACIONES TOMADAS"
+								/>
+								<label for="vacaciones_tomadas">Vacaciones tomadas</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input
+									type="number"
+									class="form-control mb-3"
+									id="aguinaldo"
+									placeholder=""
+									name="AGUINALDO"
+								/>
+								<label for="aguinaldo">Aguinaldo</label>
+							</div>
+							<div class="form-floating mb-3">
+								<input
+									type="number"
+									class="form-control mb-3"
+									id="total"
+									placeholder=""
+									name="TOTAL"
+									required
+									disabled
+								/>
+								<label for="total">Total</label>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button
+							type="button"
+							class="btn btn-danger"
+							data-bs-dismiss="modal"
+						>
+							Cancelar
+						</button>
+						<button
+							type="submit"
+							form="form_mensuales"
+							class="btn btn-primary btn_mensuales-guardar"
+							data-bs-dismiss="modal"
+						>
+							Guardar
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

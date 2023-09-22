@@ -4,6 +4,8 @@ import {
 	getFromLocalStorage,
 	readExcel,
 	generateUniqId,
+	convertToDate,
+	formatingNumberToMoneda,
 } from "./funciones.js";
 
 let arrayMensuales;
@@ -26,39 +28,39 @@ const mensualesSchema = {
 	},
 	"HABERES MES": {
 		prop: "HABERES MES",
-		type: Number,
+		type: String,
 	},
 	"HORAS EXTRAS": {
 		prop: "HORAS EXTRAS",
-		type: Number,
+		type: String,
 	},
 	FERIADO: {
 		prop: "FERIADO",
-		type: Number,
+		type: String,
 	},
 	VACACIONES: {
 		prop: "VACACIONES",
-		type: Number,
+		type: String,
 	},
 	ALMUERZO: {
 		prop: "ALMUERZO",
-		type: Number,
+		type: String,
 	},
 	ADELANTO: {
 		prop: "ADELANTO",
-		type: Number,
+		type: String,
 	},
 	"VACACIONES TOMADAS": {
 		prop: "VACACIONES TOMADAS",
-		type: Number,
+		type: String,
 	},
 	AGUINALDO: {
 		prop: "AGUINALDO",
-		type: Number,
+		type: String,
 	},
 	TOTAL: {
 		prop: "TOTAL",
-		type: Number,
+		type: String,
 		required: true,
 	},
 };
@@ -74,7 +76,10 @@ const $inputExcel = document.getElementById("inputExcel");
 
 $inputExcel.addEventListener("change", async e => {
 	arrayMensuales = await readExcel($inputExcel, mensualesSchema);
-	arrayMensuales.map(e => (e.id = generateUniqId(e.DNI)));
+	arrayMensuales.map(e => {
+		e.FECHA = convertToDate(e.FECHA);
+		e.id = generateUniqId(e.DNI);
+	});
 	if (arrayMensuales === false) {
 		document.getElementById("alertMensuales").hidden = false;
 	} else {
@@ -84,10 +89,9 @@ $inputExcel.addEventListener("change", async e => {
 });
 
 const table = $("#tablaMensuales").DataTable({
-	data: arrayMensuales,
+	data: arrayMensuales, // aca también debería formatear a moneda los valores
 	columns: [
 		{ data: "NOMBRE" },
-		{ data: "id", visible: false },
 		{ data: "DNI" },
 		{ data: "FECHA" },
 		{ data: "HABERES MES" },
@@ -108,9 +112,25 @@ const table = $("#tablaMensuales").DataTable({
 		{
 			data: null,
 			defaultContent:
-				"<button class='btn'><i class='fa-solid fa-pen-to-square fa-lg' style='color: #0b5ed7;'></i></button><button class='btn'><i class='fa-solid fa-trash fa-lg' style='color: #dc3545; '></i></button>",
+				"<button class='btn' data-bs-toggle='modal' data-bs-target='#modal_mensuales-edicion'><i class='fa-solid fa-pen-to-square fa-lg' style='color: #0b5ed7;'></i></button><button class='btn'><i class='fa-solid fa-trash fa-lg' style='color: #dc3545; '></i></button>",
 			orderable: false,
 			width: "250px",
+		},
+		{ data: "id" },
+	],
+	columnDefs: [
+		{
+			targets: [3, 4, 5, 6, 7, 8, 9, 10],
+			defaultContent: 0,
+			render: function (data, type, row) {
+				return formatingNumberToMoneda(data);
+			},
+		},
+		{
+			targets: [11],
+			render: function (data, type, row) {
+				return formatingNumberToMoneda(data);
+			},
 		},
 	],
 	select: {
@@ -118,3 +138,5 @@ const table = $("#tablaMensuales").DataTable({
 	},
 	order: [[1, "asc"]],
 });
+
+export { table };
