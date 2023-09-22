@@ -243,7 +243,7 @@
 						></button>
 					</div>
 					<div class="modal-body">
-						<form class="form" if="form_mensuales" novalidate>
+						<form class="form" id="form_mensuales" novalidate>
 							<div class="form-floating mb-3">
 								<input
 									type="text"
@@ -254,6 +254,7 @@
 									required
 								/>
 								<label for="nombre">Nombre y Apellido</label>
+								<span class="emptyError"><em></em></span>
 							</div>
 							<div class="form-floating mb-3">
 								<input
@@ -265,6 +266,7 @@
 									required
 								/>
 								<label for="dni">DNI</label>
+								<span class="emptyError"><em></em></span>
 							</div>
 							<div class="form-floating mb-3">
 								<input
@@ -276,6 +278,7 @@
 									required
 								/>
 								<label for="fecha">Fecha</label>
+								<span class="emptyError"><em></em></span>
 							</div>
 							<div class="form-floating mb-3">
 								<input

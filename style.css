@@ -19,7 +19,7 @@ a {
 
 input.form-control:focus,
 select.form-select:focus {
-	box-shadow: none;
+	box-shadow: none !important;
 }
 
 .pagination li a:active {
@@ -39,4 +39,9 @@ input[type="number"]::-webkit-outer-spin-button {
 	-webkit-appearance: none;
 	appearance: none;
 	margin: 0;
+}
+
+.emptyError {
+	color: #dc3545;
+	display: none;
 }

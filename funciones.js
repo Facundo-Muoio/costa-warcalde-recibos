@@ -132,21 +132,56 @@ function formatingMonedaToNumber(dato) {
 }
 
 function totalSum(tabla, event) {
-	if (tabla === "mensuales") {
-		let form = event.target.closest("form");
-		let arr = [...form.querySelectorAll("input")];
-		arr.splice(0, 3);
-		arr.splice(arr.length - 1);
-		arr.map(e => {
-			if (
-				e.name !== "VACACIONES TOMADAS" &&
-				e.name !== "ADEALNTO" &&
-				e.name !== "ALMUERZO"
-			) {
-				e.value;
-			}
-		});
+	let inputs = [...event.target.closest("form").querySelectorAll("input")];
+	let arrInputs = inputs.slice(3, 11).map(e => {
+		if (!e) {
+			return Number((e.value = 0));
+		}
+		return Number(e.value);
+	});
+	let total = arrInputs.reduce((acc, cv, index) => {
+		let number = cv;
+		number ? number : 0;
+		if (index >= 4 && index <= 6) {
+			acc = acc - number;
+		} else {
+			acc = acc + number;
+		}
+		return acc;
+	}, 0);
+	event.target.closest("form").querySelector("input[name='TOTAL']").value =
+		total;
+}
+
+function validateEmptyInputMensuales(event) {
+	let div = event.target.closest("div");
+	let span = div.querySelector(".emptyError");
+	if (event.target.value <= 0) {
+		event.target.classList.add("is-invalid");
+		div.querySelector("label").classList.add("text-danger");
+		span.textContent = `El campo ${event.target.name.toLowerCase()} es obligatorio`;
+		span.style.display = "inline";
+	} else {
+		event.target.classList.remove("is-invalid");
+		div.querySelector("label").classList.remove("text-danger");
+		div.querySelector(".emptyError").style.display = "none";
 	}
+}
+
+function deleteRow(event, nameTable) {
+	let fila = event.target.closest("tr");
+	let idxDataTables;
+	let id = fila.querySelector("td:last-child").textContent;
+	let array = getFromLocalStorage(nameTable);
+	let elementIndex = array.findIndex(e => e.id === id);
+	array.splice(elementIndex, 1);
+	saveInLocalStorage(array, nameTable);
+	table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+		if (this.data().id === id) {
+			idxDataTables = rowIdx;
+		}
+	});
+	table.row(idxDataTables).remove().draw();
 }
 
 export {
@@ -159,5 +194,7 @@ export {
 	convertToDate,
 	formatingNumberToMoneda,
 	formatingMonedaToNumber,
+	validateEmptyInputMensuales,
 	totalSum,
+	deleteRow,
 };

@@ -86,6 +86,11 @@ $inputExcel.addEventListener("change", async e => {
 		document.getElementById("alertMensuales").hidden = true;
 		saveInLocalStorage(arrayMensuales, "mensuales");
 	}
+	if (table) {
+		table.clear();
+		table.rows.add(arrayMensuales);
+		table.draw();
+	}
 });
 
 const table = $("#tablaMensuales").DataTable({
@@ -112,7 +117,7 @@ const table = $("#tablaMensuales").DataTable({
 		{
 			data: null,
 			defaultContent:
-				"<button class='btn' data-bs-toggle='modal' data-bs-target='#modal_mensuales-edicion'><i class='fa-solid fa-pen-to-square fa-lg' style='color: #0b5ed7;'></i></button><button class='btn'><i class='fa-solid fa-trash fa-lg' style='color: #dc3545; '></i></button>",
+				"<button class='btn' data-bs-toggle='modal' data-bs-target='#modal_mensuales-edicion'><i class='fa-solid fa-pen-to-square fa-lg' style='color: #0b5ed7;'></i></button><button class='btn delete'><i class='fa-solid fa-trash fa-lg' style='color: #dc3545; '></i></button>",
 			orderable: false,
 			width: "250px",
 		},
