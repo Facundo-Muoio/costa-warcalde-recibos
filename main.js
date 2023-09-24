@@ -95,6 +95,7 @@ $inputExcel.addEventListener("change", async e => {
 
 const table = $("#tablaMensuales").DataTable({
 	data: arrayMensuales, // aca también debería formatear a moneda los valores
+	select: true,
 	columns: [
 		{ data: "NOMBRE" },
 		{ data: "DNI" },
@@ -110,8 +111,10 @@ const table = $("#tablaMensuales").DataTable({
 		{ data: "TOTAL" },
 		{
 			data: null,
-			checkboxes: {
-				selectRow: true,
+			orderable: false,
+			render: function (data, type, row) {
+				row[13] = false;
+				return "<input type='checkbox' class='seleccionar-fila'></input>";
 			},
 		},
 		{
@@ -132,16 +135,21 @@ const table = $("#tablaMensuales").DataTable({
 			},
 		},
 		{
-			targets: [11],
+			targets: 11,
 			render: function (data, type, row) {
 				return formatingNumberToMoneda(data);
 			},
 		},
+		// {
+		// 	orderable: false,
+		// 	className: "select-checkbox",
+		// 	targets: 12,
+		// },
 	],
-	select: {
-		style: "multi",
-	},
-	order: [[1, "asc"]],
+	// select: {
+	// 	style: "multi",
+	// 	selector: "td:nth-child(13) input",
+	// },
 });
 
 export { table };

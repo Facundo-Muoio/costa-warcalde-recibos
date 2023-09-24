@@ -184,6 +184,11 @@ function deleteRow(event, nameTable) {
 	table.row(idxDataTables).remove().draw();
 }
 
+function print() {
+	const datosSeleccionados = table.rows(".select-checkbox").data().toArray();
+	console.log(datosSeleccionados);
+}
+
 export {
 	saveInLocalStorage,
 	getFromLocalStorage,
@@ -197,4 +202,5 @@ export {
 	validateEmptyInputMensuales,
 	totalSum,
 	deleteRow,
+	print,
 };

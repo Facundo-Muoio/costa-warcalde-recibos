@@ -1,6 +1,7 @@
 import {
 	deleteRow,
 	editRow,
+	print,
 	totalSum,
 	updatedRow,
 	validateEmptyInputMensuales,
@@ -26,6 +27,12 @@ window.addEventListener("DOMContentLoaded", e => {
 		) {
 			deleteRow(e, "mensuales");
 		}
+		if (e.target.matches("#btn_mensuales-imprimir")) {
+			console.log(
+				document.querySelector("#tablaMensuales td:nth-child(13) input")
+			);
+			// print();
+		}
 	});
 
 	window.addEventListener("change", e => {
@@ -38,6 +45,27 @@ window.addEventListener("DOMContentLoaded", e => {
 			e.target.matches("#form_mensuales input[name='FECHA']")
 		) {
 			validateEmptyInputMensuales(e);
+		}
+		if (e.target.matches("#tablaMensuales #seleccionar-todas")) {
+			document.querySelectorAll(".seleccionar-fila").forEach(el => {
+				e.target.checked ? (el.checked = true) : (el.checked = false);
+			});
+			// $("#seleccionar-todas").on("change", function () {
+			// 	$(".seleccionar-fila").prop("checked", this.checked);
+			// });
+		}
+		if (e.target.matches("#tablaMensuales .seleccionar-fila")) {
+			let selectedRows = table.rows({ selected: true }).count();
+			let totalRows = table.rows().count();
+			let selectedAllRows = document.querySelector(
+				"#tablaMensuales #seleccionar-todas"
+			);
+			if (selectedRows !== totalRows) {
+				selectedAllRows.checked = false;
+			} else {
+				selectedAllRows.checked = true;
+			}
+			console.log(selectedRows, totalRows);
 		}
 	});
 });
