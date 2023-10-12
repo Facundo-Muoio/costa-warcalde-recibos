@@ -76,26 +76,30 @@ const $inputExcel = document.getElementById("inputExcel");
 
 $inputExcel.addEventListener("change", async e => {
 	arrayMensuales = await readExcel($inputExcel, mensualesSchema);
-	arrayMensuales.map(e => {
-		e.FECHA = convertToDate(e.FECHA);
-		e.id = generateUniqId(e.DNI);
-	});
 	if (arrayMensuales === false) {
 		document.getElementById("alertMensuales").hidden = false;
 	} else {
 		document.getElementById("alertMensuales").hidden = true;
+		arrayMensuales.map(e => {
+			e.FECHA = convertToDate(e.FECHA);
+			e.id = generateUniqId(e.DNI);
+		});
 		saveInLocalStorage(arrayMensuales, "mensuales");
 	}
-	if (table) {
-		table.clear();
-		table.rows.add(arrayMensuales);
-		table.draw();
+	if (tablaMensuales) {
+		tablaMensuales.clear();
+		tablaMensuales.rows.add(arrayMensuales);
+		tablaMensuales.draw();
 	}
 });
 
-const table = $("#tablaMensuales").DataTable({
-	data: arrayMensuales, // aca también debería formatear a moneda los valores
-	select: true,
+const tablaMensuales = $("#tablaMensuales").DataTable({
+	data: arrayMensuales,
+	select: {
+		style: "multi",
+		selector: "td:nth-child(13) input",
+	},
+	order: [[1, "asc"]],
 	columns: [
 		{ data: "NOMBRE" },
 		{ data: "DNI" },
@@ -112,10 +116,7 @@ const table = $("#tablaMensuales").DataTable({
 		{
 			data: null,
 			orderable: false,
-			render: function (data, type, row) {
-				row[13] = false;
-				return "<input type='checkbox' class='seleccionar-fila'></input>";
-			},
+			defaultContent: "<input type='checkbox' class='select-checkbox'></input>",
 		},
 		{
 			data: null,
@@ -130,26 +131,41 @@ const table = $("#tablaMensuales").DataTable({
 		{
 			targets: [3, 4, 5, 6, 7, 8, 9, 10],
 			defaultContent: 0,
+			orderable: false,
 			render: function (data, type, row) {
 				return formatingNumberToMoneda(data);
 			},
 		},
 		{
 			targets: 11,
+			orderable: false,
 			render: function (data, type, row) {
 				return formatingNumberToMoneda(data);
 			},
 		},
-		// {
-		// 	orderable: false,
-		// 	className: "select-checkbox",
-		// 	targets: 12,
-		// },
 	],
-	// select: {
-	// 	style: "multi",
-	// 	selector: "td:nth-child(13) input",
-	// },
+	language: {
+		processing: "Procesando...",
+		lengthMenu: "Mostrar _MENU_ registros",
+		zeroRecords: "No se encontraron resultados",
+		emptyTable: "Ningún dato disponible en esta tabla",
+		infoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+		infoFiltered: "(filtrado de un total de _MAX_ registros)",
+		search: "Buscar:",
+		loadingRecords: "Cargando...",
+		paginate: {
+			first: "Primero",
+			last: "Último",
+			next: "Siguiente",
+			previous: "Anterior",
+		},
+		aria: {
+			sortAscending: ": Activar para ordenar la columna de manera ascendente",
+			sortDescending: ": Activar para ordenar la columna de manera descendente",
+		},
+
+		info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+	},
 });
 
-export { table };
+export { tablaMensuales };
