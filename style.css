@@ -113,11 +113,11 @@ nav ul li a {
 	width: 100%;
 }
 
-#inputExcel {
+#inputExcelMensuales {
 	display: none;
 }
 
-#labelInputExcel {
+#labelExcelMensuales {
 	display: inline-block;
 	cursor: pointer;
 	font-size: 1rem;
@@ -130,7 +130,7 @@ nav ul li a {
 	border: 1px solid green;
 }
 
-#labelInputExcel:hover {
+#labelExcelMensuales:hover {
 	background-color: darkgreen;
 }
 
@@ -544,7 +544,7 @@ input[type="number"]::-webkit-outer-spin-button {
 		padding: 3px 12px;
 	}
 
-	#labelInputExcel {
+	#labelInputExcelMensuales {
 		padding: 3px 12px;
 	}
 
@@ -609,7 +609,7 @@ input[type="number"]::-webkit-outer-spin-button {
 		box-shadow: 0 0.25rem 0.8rem black;
 	}
 
-	#labelInputExcel {
+	#labelInputExcelMensuales {
 		min-height: 18px;
 		padding: 4.5px 9px;
 		min-width: 15px;

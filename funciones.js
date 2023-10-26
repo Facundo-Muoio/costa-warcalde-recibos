@@ -29,10 +29,54 @@ function readExcel(input, schema) {
 	});
 }
 
+async function checkInputExcel(input, schema, array, table) {
+	array = await readExcel(input, schema);
+	if (array === false) {
+		document.querySelector(".error-section").hidden = false;
+	} else {
+		document.querySelector(".error-section").hidden = true;
+		array.map(e => {
+			e.NOMBRE = formatedCase(e.NOMBRE);
+			e.FECHA = convertToDate(e.FECHA);
+			e.id = generateRandomId();
+		});
+		saveInLocalStorage(array, "jornales");
+	}
+	if (table) {
+		table.clear();
+		table.rows.add(array);
+		table.draw();
+	}
+}
+
+async function checkInputExcelMensuales(input, schema, array, table) {
+	array = await readExcel(input, schema);
+	if (array === false) {
+		document.getElementById("alertMensaules").hidden = false;
+	} else {
+		document.getElementById("alertMensuales").hidden = true;
+		array.map(e => {
+			e.FECHA = convertToDate(e.FECHA);
+			e.id = generateUniqId(e.DNI);
+		});
+		saveInLocalStorage(array, "mensuales");
+	}
+	if (table) {
+		table.clear();
+		table.rows.add(array);
+		table.draw();
+	}
+}
+
 function generateUniqId(dni) {
 	const timestamp = new Date().getTime();
 	uniqueIdCounter++;
 	return `${dni}_${timestamp}_${uniqueIdCounter}`;
+}
+
+function generateRandomId() {
+	const id = crypto.randomUUID();
+	return id;
 }
 
 function editRow(event) {
@@ -58,7 +102,7 @@ function editRow(event) {
 	saveInLocalStorage({ id, rowIndex }, "row");
 }
 
-function updatedRow(event) {
+function updatedRow(event, table) {
 	let objetoDatos = {};
 	let { id, rowIndex } = getFromLocalStorage("row");
 	// console.log(id, rowIndex);
@@ -77,21 +121,69 @@ function updatedRow(event) {
 	let index = arrayMensuales.findIndex(e => e.id === id);
 	arrayMensuales[index] = objetoDatos;
 	saveInLocalStorage(arrayMensuales, "mensuales");
-	renderRow(tablaMensuales, id, objetoDatos);
+	renderRow(table, id, objetoDatos);
 }
 
-function renderRow(tabla, id, objetoDatos) {
+function openModal() {
+	document.querySelector(".modal-edit").showModal();
+}
+
+function closeModal() {
+	document.querySelector(".modal-edit").close();
+}
+
+function editRowJornalesProveedores(event) {
+	let id = event.target.closest("td").nextSibling.textContent;
+	let element = getFromLocalStorage("jornales").find(e => e.id === id);
+	let values = Object.values(element);
+	if (element.hasOwnProperty("HORAS TRABAJADAS")) {
+		let inputs = document.querySelectorAll(".input-group > input");
+		inputs.forEach((e, i) => {
+			if (e.name === "FECHA") {
+				e.value = values[i].split("/").reverse().join("-");
+			} else {
+				e.value = values[i];
+			}
+		});
+	}
+}
+
+function updateRowJoranlesProveedores(event, table) {
+	let inputs = document.querySelectorAll(".input-group > input");
+	let id =
+		event.target.parentElement.previousElementSibling.firstElementChild
+			.lastElementChild.firstElementChild.value;
+	let newArray = getFromLocalStorage("jornales").map(element => {
+		if (element.id === id) {
+			inputs.forEach(e => {
+				element[e.name] = e.value;
+			});
+			return element;
+		}
+		return element;
+	});
+	let objeto = newArray.find(e => e.id === id);
+	saveInLocalStorage(newArray, "jornales");
+	renderRow(table, id, objeto, "jornales");
+}
+
+function renderRow(tabla, id, objetoDatos, categoria = "mensuales") {
 	let index;
+
 	tabla.rows().every(function (rowIdx, tableLoop, rowLoop) {
 		if (this.data().id === id) {
 			index = rowIdx;
 		}
 	});
-	for (let propiedad in objetoDatos) {
-		if (objetoDatos[propiedad] === null || objetoDatos[propiedad] === "") {
-			objetoDatos[propiedad] = 0;
+
+	if (categoria === "mensuales") {
+		for (let propiedad in objetoDatos) {
+			if (objetoDatos[propiedad] === null || objetoDatos[propiedad] === "") {
+				objetoDatos[propiedad] = 0;
+			}
 		}
 	}
+
 	tabla.row(index).data(objetoDatos).draw();
 }
 
@@ -186,20 +278,23 @@ function removeErrors() {
 	}
 }
 
-function deleteRow(event, nameTable) {
-	let fila = event.target.closest("tr");
+function deleteRow(event, nameTable, table) {
+	let id = event.target
+		.closest("tr")
+		.querySelector("td:last-child").textContent;
 	let idxDataTables;
-	let id = fila.querySelector("td:last-child").textContent;
 	let array = getFromLocalStorage(nameTable);
-	let elementIndex = array.findIndex(e => e.id === id);
+	let elementIndex;
+	nameTable === "mensuales";
+	elementIndex = array.findIndex(e => e.id === id);
 	array.splice(elementIndex, 1);
 	saveInLocalStorage(array, nameTable);
-	tablaMensuales.rows().every(function (rowIdx, tableLoop, rowLoop) {
+	table.rows().every(function (rowIdx, tableLoop, rowLoop) {
 		if (this.data().id === id) {
 			idxDataTables = rowIdx;
 		}
 	});
-	tablaMensuales.row(idxDataTables).remove().draw();
+	table.row(idxDataTables).remove().draw();
 }
 
 function selectAllRows(event, tabla) {
@@ -208,13 +303,13 @@ function selectAllRows(event, tabla) {
 		checkboxes.map(e => (e.checked = true));
 		tabla.rows().select();
 	} else {
-		tabla.rows().deselect();
 		checkboxes.map(e => (e.checked = false));
+		tabla.rows().deselect();
 	}
 }
 
 function updatingStateCheckbox(tabla) {
-	let checkboxAll = document.querySelector("#mesuales_checkbox-all");
+	let checkboxAll = document.querySelector(".tables_checkbox-all");
 	let checkboxes = [...tabla.rows().nodes().to$().find(".select-checkbox")];
 	let count = 0;
 	checkboxes.map(e => (e.checked ? count++ : ""));
@@ -226,15 +321,21 @@ function updatingStateCheckbox(tabla) {
 	}
 }
 
-function print() {
+function print(table, nameTable) {
 	const containerPdfs = document.querySelector(".containerPdfs");
 	containerPdfs.innerHTML = "";
 	containerPdfs.style.display = "block";
 
-	generarPdfMensuales();
+	if (nameTable === "mensuales") {
+		generarPdfMensuales(table);
+	}
+
+	if (nameTable === "jornales") {
+		generarPdfJornales(table);
+	}
 
 	const opciones = {
-		margin: 2,
+		margin: 5,
 		filename: "recibos-mensuales.pdf",
 		html2canvas: { scale: 1 },
 		jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
@@ -249,10 +350,10 @@ function print() {
 		.then(() => (containerPdfs.style.display = "none"));
 }
 
-async function generarPdfMensuales() {
+async function generarPdfMensuales(table) {
 	const contenidoPdf = document.createDocumentFragment();
 
-	const arrMensuales = tablaMensuales.rows({ selected: true }).data().toArray();
+	const arrMensuales = table.rows({ selected: true }).data().toArray();
 
 	arrMensuales.map(e => {
 		const div = document.createElement("div");
@@ -376,10 +477,74 @@ async function generarPdfMensuales() {
 	document.querySelector(".containerPdfs").append(contenidoPdf);
 }
 
-function disabledPrintButton(id) {
-	const arrMensuales = tablaMensuales.rows({ selected: true }).data().toArray();
+async function generarPdfJornales(table) {
+	const contenidoPdf = document.createDocumentFragment();
+
+	const arrJornales = table.rows({ selected: true }).data().toArray();
+
+	arrJornales.map(e => {
+		const div = document.createElement("div");
+		div.classList.add("container_jornales-recibo");
+
+		const {
+			NOMBRE,
+			DNI,
+			FECHA,
+			"UNIDAD DE NEGOCIO": UNIDAD_NEGOCIO,
+			"HORAS TRABAJADAS": HORAS_TRABAJADAS,
+			SUELDO,
+		} = e;
+
+		const letrasSueldo = numeroALetras(SUELDO, {
+			plural: "PESOS",
+			singular: "PESO",
+			centPlural: "CENTAVOS",
+			centSingular: "CENTAVO",
+		});
+
+		const innerHtmlRecibo = `
+			<div class="filaUno"><strong>RECIBO DE PAGO</strong></div>
+      <div class="filaDos">
+        <span>FECHA</span>
+        <span>${FECHA ? FECHA : "__________"}</span>
+      </div>
+      <div class="filaTres">
+        <strong>Nombre:</strong> ${NOMBRE ? NOMBRE.toUpperCase() : ""}
+      </div>
+      <div class="filaCuatro">
+        <strong>Recibi de:</strong> CORTEO S.R.L
+      </div>
+      <div class="filaCinco">
+        <strong>La cantidad de:</strong> ${
+					SUELDO ? formatingNumberToMoneda(Number(SUELDO)) : ""
+				} ${SUELDO ? letrasSueldo : ""}
+      </div>
+      <div class="filaSeis">
+        <strong>Por concepto de:</strong> ${
+					UNIDAD_NEGOCIO ? UNIDAD_NEGOCIO : ""
+				} ${HORAS_TRABAJADAS ? HORAS_TRABAJADAS + " hs" : ""}
+      </div>
+      <div class="filaSiete">
+        <span>Firma:</span>
+        <span>Aclaracion:</span>
+        <span>DNI: ${DNI ? DNI : ""}</span>
+      </div>
+		`;
+		div.innerHTML += innerHtmlRecibo;
+		contenidoPdf.appendChild(div);
+	});
+
+	document.querySelector(".containerPdfs").append(contenidoPdf);
+	document.querySelectorAll(".containerPdfs > div:nth-child(4n)").forEach(e => {
+		e.classList.add("page-break");
+		console.log(e);
+	});
+}
+
+function disabledPrintButton(id, table) {
+	const tabla = table.rows({ selected: true }).data().toArray();
 	const button = document.querySelector(`${id}`);
-	arrMensuales.length ? (button.disabled = false) : (button.disabled = true);
+	tabla.length ? (button.disabled = false) : (button.disabled = true);
 }
 
 function alertPdfMensuales() {
@@ -391,13 +556,218 @@ function formatedCase(string) {
 	return str.replace(/\b\w/g, char => char.toUpperCase());
 }
 
+let numeroALetras = (function () {
+	function Unidades(num) {
+		switch (num) {
+			case 1:
+				return "UN";
+			case 2:
+				return "DOS";
+			case 3:
+				return "TRES";
+			case 4:
+				return "CUATRO";
+			case 5:
+				return "CINCO";
+			case 6:
+				return "SEIS";
+			case 7:
+				return "SIETE";
+			case 8:
+				return "OCHO";
+			case 9:
+				return "NUEVE";
+		}
+
+		return "";
+	} //Unidades()
+
+	function Decenas(num) {
+		let decena = Math.floor(num / 10);
+		let unidad = num - decena * 10;
+
+		switch (decena) {
+			case 1:
+				switch (unidad) {
+					case 0:
+						return "DIEZ";
+					case 1:
+						return "ONCE";
+					case 2:
+						return "DOCE";
+					case 3:
+						return "TRECE";
+					case 4:
+						return "CATORCE";
+					case 5:
+						return "QUINCE";
+					default:
+						return "DIECI" + Unidades(unidad);
+				}
+			case 2:
+				switch (unidad) {
+					case 0:
+						return "VEINTE";
+					default:
+						return "VEINTI" + Unidades(unidad);
+				}
+			case 3:
+				return DecenasY("TREINTA", unidad);
+			case 4:
+				return DecenasY("CUARENTA", unidad);
+			case 5:
+				return DecenasY("CINCUENTA", unidad);
+			case 6:
+				return DecenasY("SESENTA", unidad);
+			case 7:
+				return DecenasY("SETENTA", unidad);
+			case 8:
+				return DecenasY("OCHENTA", unidad);
+			case 9:
+				return DecenasY("NOVENTA", unidad);
+			case 0:
+				return Unidades(unidad);
+		}
+	} //Unidades()
+
+	function DecenasY(strSin, numUnidades) {
+		if (numUnidades > 0) return strSin + " Y " + Unidades(numUnidades);
+
+		return strSin;
+	} //DecenasY()
+
+	function Centenas(num) {
+		let centenas = Math.floor(num / 100);
+		let decenas = num - centenas * 100;
+
+		switch (centenas) {
+			case 1:
+				if (decenas > 0) return "CIENTO " + Decenas(decenas);
+				return "CIEN";
+			case 2:
+				return "DOSCIENTOS " + Decenas(decenas);
+			case 3:
+				return "TRESCIENTOS " + Decenas(decenas);
+			case 4:
+				return "CUATROCIENTOS " + Decenas(decenas);
+			case 5:
+				return "QUINIENTOS " + Decenas(decenas);
+			case 6:
+				return "SEISCIENTOS " + Decenas(decenas);
+			case 7:
+				return "SETECIENTOS " + Decenas(decenas);
+			case 8:
+				return "OCHOCIENTOS " + Decenas(decenas);
+			case 9:
+				return "NOVECIENTOS " + Decenas(decenas);
+		}
+
+		return Decenas(decenas);
+	} //Centenas()
+
+	function Seccion(num, divisor, strSingular, strPlural) {
+		let cientos = Math.floor(num / divisor);
+		let resto = num - cientos * divisor;
+
+		let letras = "";
+
+		if (cientos > 0)
+			if (cientos > 1) letras = Centenas(cientos) + " " + strPlural;
+			else letras = strSingular;
+
+		if (resto > 0) letras += "";
+
+		return letras;
+	} //Seccion()
+
+	function Miles(num) {
+		let divisor = 1000;
+		let cientos = Math.floor(num / divisor);
+		let resto = num - cientos * divisor;
+
+		let strMiles = Seccion(num, divisor, "UN MIL", "MIL");
+		let strCentenas = Centenas(resto);
+
+		if (strMiles == "") return strCentenas;
+
+		return strMiles + " " + strCentenas;
+	} //Miles()
+
+	function Millones(num) {
+		let divisor = 1000000;
+		let cientos = Math.floor(num / divisor);
+		let resto = num - cientos * divisor;
+
+		let strMillones = Seccion(num, divisor, "UN MILLON DE", "MILLONES DE");
+		let strMiles = Miles(resto);
+
+		if (strMillones == "") return strMiles;
+
+		return strMillones + " " + strMiles;
+	} //Millones()
+
+	return function NumeroALetras(num, currency) {
+		currency = currency || {};
+		let data = {
+			numero: num,
+			enteros: Math.floor(num),
+			centavos: Math.round(num * 100) - Math.floor(num) * 100,
+			letrasCentavos: "",
+			letrasMonedaPlural: currency.plural || "PESOS CHILENOS", //'PESOS', 'Dólares', 'Bolívares', 'etcs'
+			letrasMonedaSingular: currency.singular || "PESO CHILENO", //'PESO', 'Dólar', 'Bolivar', 'etc'
+			letrasMonedaCentavoPlural: currency.centPlural || "CHIQUI PESOS CHILENOS",
+			letrasMonedaCentavoSingular:
+				currency.centSingular || "CHIQUI PESO CHILENO",
+		};
+
+		if (data.centavos > 0) {
+			data.letrasCentavos =
+				"CON " +
+				(function () {
+					if (data.centavos == 1)
+						return (
+							Millones(data.centavos) + " " + data.letrasMonedaCentavoSingular
+						);
+					else
+						return (
+							Millones(data.centavos) + " " + data.letrasMonedaCentavoPlural
+						);
+				})();
+		}
+
+		if (data.enteros == 0)
+			return "CERO " + data.letrasMonedaPlural + " " + data.letrasCentavos;
+		if (data.enteros == 1)
+			return (
+				Millones(data.enteros) +
+				" " +
+				data.letrasMonedaSingular +
+				" " +
+				data.letrasCentavos
+			);
+		else
+			return (
+				Millones(data.enteros) +
+				" " +
+				data.letrasMonedaPlural +
+				" " +
+				data.letrasCentavos
+			);
+	};
+})();
+
 export {
 	saveInLocalStorage,
 	getFromLocalStorage,
 	readExcel,
 	generateUniqId,
+	generateRandomId,
 	editRow,
+	editRowJornalesProveedores,
+	openModal,
+	closeModal,
 	updatedRow,
+	updateRowJoranlesProveedores,
 	convertToDate,
 	formatingNumberToMoneda,
 	formatingMonedaToNumber,
@@ -411,4 +781,6 @@ export {
 	disabledPrintButton,
 	alertPdfMensuales,
 	formatedCase,
+	checkInputExcel,
+	checkInputExcelMensuales,
 };

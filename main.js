@@ -1,12 +1,5 @@
 const d = document;
-import {
-	saveInLocalStorage,
-	getFromLocalStorage,
-	readExcel,
-	generateUniqId,
-	convertToDate,
-	formatingNumberToMoneda,
-} from "./funciones.js";
+import { getFromLocalStorage, formatingNumberToMoneda } from "./funciones.js";
 
 let arrayMensuales;
 
@@ -72,26 +65,7 @@ if (
 	arrayMensuales = getFromLocalStorage("mensuales");
 }
 
-const $inputExcel = document.getElementById("inputExcel");
-
-$inputExcel.addEventListener("change", async e => {
-	arrayMensuales = await readExcel($inputExcel, mensualesSchema);
-	if (arrayMensuales === false) {
-		document.getElementById("alertMensuales").hidden = false;
-	} else {
-		document.getElementById("alertMensuales").hidden = true;
-		arrayMensuales.map(e => {
-			e.FECHA = convertToDate(e.FECHA);
-			e.id = generateUniqId(e.DNI);
-		});
-		saveInLocalStorage(arrayMensuales, "mensuales");
-	}
-	if (tablaMensuales) {
-		tablaMensuales.clear();
-		tablaMensuales.rows.add(arrayMensuales);
-		tablaMensuales.draw();
-	}
-});
+const $inputExcelMensuales = document.getElementById("inputExcelMensuales");
 
 const tablaMensuales = $("#tablaMensuales").DataTable({
 	data: arrayMensuales,
@@ -121,7 +95,7 @@ const tablaMensuales = $("#tablaMensuales").DataTable({
 		{
 			data: null,
 			defaultContent:
-				"<button class='btn' data-bs-toggle='modal' data-bs-target='#modal_mensuales-edicion'><i class='fa-solid fa-pen-to-square fa-lg' style='color: #0b5ed7;'></i></button><button class='btn delete'><i class='fa-solid fa-trash fa-lg' style='color: #dc3545; '></i></button>",
+				"<button class='btn btn_mensuales-edit' data-bs-toggle='modal' data-bs-target='#modal_mensuales-edicion'><i class='fa-solid fa-pen-to-square fa-lg  btn_mensuales-edit' style='color: #0b5ed7;'></i></button><button class='btn delete  btn_mensuales-edit'><i class='fa-solid fa-trash fa-lg btn_mensuales-edit' style='color: #dc3545; '></i></button>",
 			orderable: false,
 			width: "250px",
 		},
@@ -168,4 +142,9 @@ const tablaMensuales = $("#tablaMensuales").DataTable({
 	},
 });
 
-export { tablaMensuales };
+export {
+	arrayMensuales,
+	mensualesSchema,
+	$inputExcelMensuales,
+	tablaMensuales,
+};

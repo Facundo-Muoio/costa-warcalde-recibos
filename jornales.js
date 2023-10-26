@@ -1,10 +1,7 @@
 import {
-	convertToDate,
 	getFromLocalStorage,
-	readExcel,
-	saveInLocalStorage,
-	formatedCase,
 	formatingNumberToMoneda,
+	convertToDate,
 } from "./funciones.js";
 
 let arrayJornales;
@@ -43,34 +40,13 @@ if (
 	arrayJornales = getFromLocalStorage("jornales");
 }
 
-const $inputExcel = document.getElementById("inputExcel");
-
-$inputExcel.addEventListener("change", async e => {
-	arrayJornales = await readExcel($inputExcel, jornalesSchema);
-	if (arrayJornales === false) {
-		document.querySelector(".error-section").hidden = false;
-	} else {
-		document.querySelector(".error-section").hidden = true;
-		arrayJornales.map(e => {
-			e.NOMBRE = formatedCase(e.NOMBRE);
-			e.FECHA = convertToDate(e.FECHA);
-			e.SUELDO = formatingNumberToMoneda(e.SUELDO);
-		});
-		saveInLocalStorage(arrayJornales, "jornales");
-	}
-
-	if (tableJornales) {
-		tableJornales.clear();
-		tableJornales.rows.add(arrayJornales);
-		tableJornales.draw();
-	}
-});
+const $inputExcelJornales = document.querySelector("#inputExcelJornales");
 
 const tableJornales = new $("#tablaJornales").DataTable({
 	data: arrayJornales,
 	select: {
 		style: "multi",
-		selector: "td:nth-child(13) input",
+		selector: "td:nth-child(7) input",
 	},
 	order: [[1, "asc"]],
 	columns: [
@@ -88,19 +64,34 @@ const tableJornales = new $("#tablaJornales").DataTable({
 			data: null,
 			defaultContent: `
 			<div>
-					<button class="btn-edit">
+					<button class="btn-edit btn_jornales-edit">
 						<i
-							class="fa-solid fa-pen-to-square fa-xl"
+							class="fa-solid fa-pen-to-square fa-xl btn_jornales-edit"
 							style="color: #0b5ed7;"
 						></i>
 					</button>
-					<button class="btn-delete">
-						<i class="fa-solid fa-trash fa-xl" style="color: #dc3545"></i>
+					<button class="btn-delete btn_jornales-delete">
+						<i class="fa-solid fa-trash fa-xl btn_jornales-delete" style="color: #dc3545"></i>
 					</button>
 				</div>`,
 		},
+		{ data: "id", orderable: false },
 	],
-	columnDefs: [{ target: [3, 4, 5, 6, 7], orderable: false }],
+	columnDefs: [
+		{ target: [2, 3, 4, 5, 6, 7], orderable: false },
+		{
+			target: 2,
+			render: function (data) {
+				return data.split("-").reverse().join("/");
+			},
+		},
+		{
+			target: 5,
+			render: function (data, type, row) {
+				return formatingNumberToMoneda(data);
+			},
+		},
+	],
 	language: {
 		processing: "Procesando...",
 		lengthMenu: "Mostrar _MENU_ registros",
@@ -124,3 +115,5 @@ const tableJornales = new $("#tablaJornales").DataTable({
 		info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
 	},
 });
+
+export { arrayJornales, jornalesSchema, $inputExcelJornales, tableJornales };
