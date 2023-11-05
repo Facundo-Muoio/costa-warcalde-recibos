@@ -91,13 +91,13 @@ table td {
 	text-align: center !important;
 }
 
-table td:nth-child(8) div {
+table td:nth-last-child(2) div {
 	display: flex;
 	justify-content: space-around;
 }
 
 .hidde,
-table td:nth-child(9) {
+table td:last-child {
 	display: none;
 }
 
@@ -118,17 +118,38 @@ select:focus {
 	outline: none;
 }
 
-#tablaJornales_wrapper {
-	margin-top: 1rem;
+.container_tableMensuales {
+	margin: auto;
+	width: 100%;
+	max-width: 100%;
+	min-width: 768px;
+	overflow: auto;
 }
 
+#tablaMensuales {
+	font-size: 14px;
+}
+
+#tablaMensuales_wrapper,
+#tablaJornales_wrapper,
+#tablaProveedores_wrapper {
+	margin-top: 1rem;
+	width: 100%;
+}
+
+#tablaMensuales_filter,
 #tablaJornales_filter,
-#dataTables_length {
+#dataTables_length,
+#tablaProveedores_length {
 	margin-bottom: 1rem;
 }
 
+#tablaMensuales_info,
+#tablaMensuales_paginate,
 #tablaJornales_info,
-#tablaJornales_paginate {
+#tablaJornales_paginate,
+#tablaProveedores_info,
+#tablaProveedores_paginate {
 	margin-top: 1rem;
 }
 
@@ -149,11 +170,15 @@ select:focus {
 	margin-right: 0.5rem;
 }
 
-#inputExcelJornales {
+#inputExcelMensuales,
+#inputExcelJornales,
+#inputExcelProveedores {
 	display: none;
 }
 
-#labelinputExcelJornales {
+#labelinputExcelMensuales,
+#labelinputExcelJornales,
+#labelinputExcelProveedores {
 	display: inline-block;
 	cursor: pointer;
 	font-size: 1rem;
@@ -395,32 +420,52 @@ input[type="number"]::-webkit-outer-spin-button {
 		font-size: 0.75rem;
 	}
 
+	.container_tableMensuales {
+		min-width: auto;
+	}
+
+	#tablaMensuales_length,
+	#tablaMensuales_filter,
 	#tablaJornales_length,
-	#tablaJornales_filter {
+	#tablaJornales_filter,
+	#tablaProveedores_length,
+	#tablaProveedores_filter {
 		font-size: 0.875rem;
 		display: inline-block;
 		width: 50%;
 	}
 
-	#tablaJornales_length {
+	#tablaMensuales_length,
+	#tablaJornales_length,
+	#tablaProveedores_length {
 		display: inline-flex;
 		justify-content: start;
 	}
 
+	#tablaMensuales_info,
+	#tablaMensuales_paginate,
 	#tablaJornales_info,
-	#tablaJornales_paginate {
+	#tablaJornales_paginate,
+	#tablaProveedores_info,
+	#tablaProveedores_paginate {
 		margin-top: 1rem;
 		width: 50%;
 		display: inline-block;
 		font-size: 0.875rem;
 	}
 
-	#tablaJornales_info {
+	#tablaMensuales_info,
+	#tablaJornales_info,
+	#tablaProveedores_info {
 		text-align: start;
 	}
 
+	#tablaMensuales_paginate,
+	#tablaMensuales_filter,
 	#tablaJornales_paginate,
-	#tablaJornales_filter {
+	#tablaJornales_filter,
+	#tablaProveedores_paginate,
+	#tablaProveedores_filter {
 		display: inline-flex;
 		justify-content: end;
 	}
@@ -464,4 +509,179 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .page-break {
 	page-break-after: always;
+}
+
+/* RECIBOS PROVEEDORES */
+
+.container_proveedores-recibo {
+	width: 600px;
+	height: auto;
+	margin: auto;
+	border: 2px solid black;
+	margin-bottom: 1px;
+}
+
+.container_proveedores-recibo span,
+.container_proveedores-recibo em,
+.container_proveedores-recibo strong {
+	font-family: "Times New Roman", Times, serif;
+}
+
+.rowUno {
+	height: 66px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.rowDos {
+	background-color: #ccc;
+	text-align: center;
+	border-top: 2px solid black;
+	border-bottom: 2px solid black;
+	font-weight: 700;
+	padding: 8px;
+}
+
+.rowTres {
+	display: flex;
+	flex-direction: row;
+	border-bottom: 2px solid black;
+	width: 100%;
+}
+
+.rowTres em {
+	font-size: 0.7rem;
+}
+
+.rowTres span:nth-child(1),
+.rowTres span:nth-child(2) {
+	border-right: 1px solid black;
+	padding: 0.6rem;
+}
+
+.rowTres span:nth-child(n + 2) {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.rowTres span:nth-child(3) {
+	flex-grow: 1;
+}
+
+.rowCuatro,
+.rowCinco,
+.rowSeis,
+.rowComprobante,
+.rowSiete,
+.rowOcho {
+	display: flex;
+	flex-direction: row;
+	border-bottom: 2px solid black;
+}
+
+.rowCuatro em {
+	width: 50%;
+	font-size: 0.8rem;
+	vertical-align: center;
+	font-weight: bold;
+	text-align: center;
+}
+
+.rowCuatro em:first-child {
+	border-right: 1px solid black;
+}
+
+.rowCuatro em,
+.rowCuatro span,
+.rowCinco em,
+.rowCinco span,
+.rowComprobante strong,
+.rowComprobante span {
+	padding: 0.1rem 0.4rem;
+}
+
+.rowCinco {
+	min-height: 20px;
+}
+
+.rowCinco span {
+	text-align: center;
+	width: 50%;
+}
+
+.rowCinco span:first-child {
+	border-right: 1px solid black;
+}
+
+.rowComprobante,
+.rowComprobante span {
+	font-size: 0.8rem;
+	text-align: center;
+	flex-grow: 1;
+}
+
+.rowComprobante strong {
+	width: 50%;
+	border-right: 1px solid black;
+}
+
+.rowComprobante {
+	min-height: 20px;
+}
+
+.rowSeis span:first-child,
+.rowSiete span:first-child {
+	width: 60%;
+}
+
+.rowSeis span:not(:first-child),
+.rowSiete span:not(:first-child) {
+	width: 20%;
+}
+
+.rowSeis span {
+	padding: 0.1rem 0.5rem;
+	font-size: 0.75rem;
+	font-weight: bold;
+}
+
+.rowSeis span:not(:last-child),
+.rowSiete span:not(:last-child) {
+	border-right: 1px solid black;
+}
+
+.rowSiete span {
+	padding: 0.1rem 0.5rem;
+}
+
+.rowSiete {
+	min-height: 20px;
+}
+
+.rowOcho strong:first-child {
+	width: 80%;
+	border-right: 1px solid black;
+}
+
+.rowOcho strong {
+	background-color: #ccc;
+	padding: 0.1rem 0.5rem;
+}
+
+.rowOcho strong:last-child {
+	width: 20%;
+}
+
+.rowOcho {
+	min-height: 20px;
+}
+
+.rowNueve {
+	height: 80px;
+	display: flex;
+	justify-content: space-around;
+	align-items: end;
+	padding: 0.5rem;
 }

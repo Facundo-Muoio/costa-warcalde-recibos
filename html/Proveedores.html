@@ -16,7 +16,7 @@
 		/>
   
     <!-- Mi CSS -->
-    <link rel="stylesheet" href="jornales-proveedores.css" />
+    <link rel="stylesheet" href="../css/jornales-proveedores.css" />
 
 	<!-- fontawesome -->
 
@@ -38,30 +38,34 @@
         </button>
       </header>
       <main class="main_modal-edit">
-        <form  id="form_jornales" method="dialog">
+        <form  id="form_proveedores" method="dialog">
          <div class="input-group">
-           <input type="text" id="nombre" placeholder=" " name="NOMBRE" >
-           <label for="nombre">Nombre y Apellido</label>
+           <input type="text" id="proveedor" placeholder=" " name="PROVEEDOR" >
+           <label for="proveedor">Nombre y Apellido</label>
          </div>
           <div class="input-group">
-            <input type="number" id="dni" placeholder=" " name="DNI" >
-            <label for="dni">DNI</label>
+            <input type="number" id="cuit" placeholder=" " name="CUIT" >
+            <label for="cuit">DNI</label>
           </div>
          <div class="input-group">
            <input type="date" id="fecha" placeholder=" " name="FECHA" value="" >
            <label for="fecha"></label>
          </div>
-          <div class="input-group">
-            <input type="text" id="unidad_de_negocio" placeholder=" " name="UNIDAD DE NEGOCIO" >
-            <label for="unidad_de_negocio">Unidad De Negocio</label>
-          </div>
-          <div class="input-group"> 
-            <input type="number" id="horas_trabajadas" placeholder=" " name="HORAS TRABAJADAS" >
-            <label for="horas_trabajadas">Horas Trabajadas</label>
+         <div class="input-group">
+            <input type="text" id="comprobante" placeholder=" " name="COMPROBANTE" >
+            <label for="comprobante">Sueldo</label>
           </div>
           <div class="input-group">
-            <input type="number" id="sueldo" placeholder=" " name="SUELDO" >
-            <label for="sueldo">Sueldo</label>
+            <input type="text" id="concepto" placeholder=" " name="CONCEPTO" >
+            <label for="concepto">Sueldo</label>
+          </div>
+          <div class="input-group">
+            <input type="text" id="forma_pago" placeholder=" " name="FORMA DE PAGO" >
+            <label for="forma_pago">Sueldo</label>
+          </div>
+          <div class="input-group">
+            <input type="number" id="monto" placeholder=" " name="MONTO" >
+            <label for="monto">Sueldo</label>
           </div>
           <div class="input-group hidde">
             <input type="string" id="id" placeholder=" " name="ID" >
@@ -71,18 +75,18 @@
       </main>
       <footer class="footer_modal-edit">
         <button class="btn_modal-cancelar">Cancelar</button>
-        <button   class="btn_modal-guardar">Guardar</button>
+        <button   class="btn_modal-guardar btn_proveedores-guardar">Guardar</button>
       </footer>
   </dialog>
 
 	<div class="container">
       <header>
       
-          <img src="imagenes/logo-costa-color.png" alt="logo costa warcalde" />
+          <img src="../imagenes/logo-costa-color.png" alt="logo costa warcalde" />
           <div>
             <ul>
               <li><a href="./index.html" class="header-a">Mensuales</a></li>
-              <li><a href="./Proveedores.html" class="header-a">Proveedores</a></li>
+              <li><a href="./Jornales.html" class="header-a">Jornales</a></li>
             </ul>
           </div>
 
@@ -121,7 +125,7 @@
               </span>
           </summary>
          <div>
-           <img src="./imagenes/encabezados_jornales.png" alt="">
+           <img src="../imagenes/encabezados_proveedores.png" alt="">
          </div>
         </details>
         </li>
@@ -134,7 +138,7 @@
                 </strong> debe corresponderse como se señala a continuación:
               </span>   
           </summary>
-          <img src="./imagenes/formato_jornales.png" alt="imagen formato de columnas jornales"> 
+          <img src="../imagenes/formato_proveedores.png" alt="imagen formato de columnas jornales"> 
         </details>
         </li>
 
@@ -147,7 +151,7 @@
                 </strong> (mes, día y año)
               </span>
           </summary>
-          <img src="./imagenes/fecha_jornales.png" alt="imagen con el formato fecha de los jornales">
+          <img src="../imagenes/fecha_jornales.png" alt="imagen con el formato fecha de los jornales">
         </details>
         </li>
 
@@ -164,7 +168,7 @@
                   hallarse en la hoja número uno.
                 </span>
             </summary>
-            <img src="./imagenes/hoja_jornales.png" alt="imagne con la hoja seleccionada de jornales">
+            <img src="../imagenes/hoja_proveedores.png" alt="imagne con la hoja seleccionada de jornales">
           </details>
         </li>
 
@@ -173,31 +177,33 @@
       </section>  
     
       <div class="container-controls_print_excel">
-        <button id="btn_jornales-imprimir">
+        <button id="btn_proveedores-imprimir">
           <i class="fa-solid fa-print fa-lg" style="color: #ffffff"></i>
         </button>
-          <label for="inputExcelJornales" class="custom-file-upload" id="labelinputExcelJornales">
+          <label for="inputExcelProveedores" class="custom-file-upload" id="labelinputExcelProveedores">
 							<i
 								class="fa-solid fa-file-excel fa-lg"
 								style="color: #ffffff"
 							></i>
 					</label>
-					<input type="file" name="inputExcel" id="inputExcelJornales" />
+					<input type="file" name="inputExcel" id="inputExcelProveedores" />
       </div>
 
-        <table id="tablaJornales">
+        <table id="tablaProveedores">
           <thead>
-            <th>Nombre</th>
-            <th>DNI</th>
+            <th>Proveedor</th>
+            <th>Cuit</th>
             <th>Fecha</th>
-            <th>Unidad de Negocio</th>
-            <th>Horas Trabajadas</th>
-            <th>Sueldo</th>
-            <th><input type="checkbox" name="" id="jornales_checkbox-all" 	class="tables_checkbox-all"></th>
+            <th>Comprobante</th>
+            <th>Concepto</th>
+            <th>Forma de Pago</th>
+            <th>Monto</th>
+            <th><input type="checkbox" name="" id="proveedores_checkbox-all" 	class="tables_checkbox-all"></th>
             <th>Acciones</th>
             <th class="hidde">id</th>
           </thead>
           <tbody>
+      
           </tbody>
           <tfoot></tfoot>
         </table>
@@ -207,7 +213,7 @@
       </main>
 
       <footer>
-        <img src="imagenes/logo-costa-color.png" alt="logo costa warcalde" />
+        <img src="../imagenes/logo-costa-color.png" alt="logo costa warcalde" />
       </footer>
 
 
@@ -242,8 +248,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
    <!-- Mi JavaScript -->
-  <script src="jornales.js" type="module"></script>
-  <script src="events.js" type="module"></script>
+  <script src="../js/proveedores.js" type="module"></script>
+  <script src="../js/events.js" type="module"></script>
 
 	</body>
 </html>

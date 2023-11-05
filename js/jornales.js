@@ -1,8 +1,4 @@
-import {
-	getFromLocalStorage,
-	formatingNumberToMoneda,
-	convertToDate,
-} from "./funciones.js";
+import { getFromLocalStorage, formatingNumberToMoneda } from "./funciones.js";
 
 let arrayJornales;
 

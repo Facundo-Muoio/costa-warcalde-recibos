@@ -1,5 +1,3 @@
-// import { tablaMensuales } from "./main.js";
-
 let uniqueIdCounter = 0;
 
 function saveInLocalStorage(array, name) {
@@ -36,11 +34,16 @@ async function checkInputExcel(input, schema, array, table) {
 	} else {
 		document.querySelector(".error-section").hidden = true;
 		array.map(e => {
-			e.NOMBRE = formatedCase(e.NOMBRE);
+			e.NOMBRE ? (e.NOMBRE = formatedCase(e.NOMBRE)) : "";
 			e.FECHA = convertToDate(e.FECHA);
 			e.id = generateRandomId();
 		});
-		saveInLocalStorage(array, "jornales");
+
+		if (array[0].hasOwnProperty("NOMBRE")) {
+			saveInLocalStorage(array, "jornales");
+		} else {
+			saveInLocalStorage(array, "proveedores");
+		}
 	}
 	if (table) {
 		table.clear();
@@ -85,7 +88,6 @@ function editRow(event) {
 	const values = Object.values(
 		getFromLocalStorage("mensuales").find(e => e.id === id)
 	);
-	// console.log(values);
 	let rowIndex = fila.rowIndex;
 	let $inputs = document.querySelectorAll("#modal_mensuales-edicion input");
 	$inputs.forEach((e, i) => {
@@ -105,7 +107,6 @@ function editRow(event) {
 function updatedRow(event, table) {
 	let objetoDatos = {};
 	let { id, rowIndex } = getFromLocalStorage("row");
-	// console.log(id, rowIndex);
 	let $inputs =
 		event.target.parentElement.previousElementSibling.querySelectorAll("input");
 	$inputs.forEach(e => {
@@ -132,28 +133,31 @@ function closeModal() {
 	document.querySelector(".modal-edit").close();
 }
 
-function editRowJornalesProveedores(event) {
+function editRowJornalesProveedores(event, nameTable) {
 	let id = event.target.closest("td").nextSibling.textContent;
-	let element = getFromLocalStorage("jornales").find(e => e.id === id);
-	let values = Object.values(element);
-	if (element.hasOwnProperty("HORAS TRABAJADAS")) {
-		let inputs = document.querySelectorAll(".input-group > input");
-		inputs.forEach((e, i) => {
-			if (e.name === "FECHA") {
-				e.value = values[i].split("/").reverse().join("-");
-			} else {
-				e.value = values[i];
-			}
-		});
+	let element;
+	if (nameTable === "jornales") {
+		element = getFromLocalStorage("jornales").find(e => e.id === id);
+	} else {
+		element = getFromLocalStorage("proveedores").find(e => e.id === id);
 	}
+	let values = Object.values(element);
+	let inputs = document.querySelectorAll(".input-group > input");
+	inputs.forEach((e, i) => {
+		if (e.name === "FECHA") {
+			e.value = values[i].split("/").reverse().join("-");
+		} else {
+			e.value = values[i];
+		}
+	});
 }
 
-function updateRowJoranlesProveedores(event, table) {
+function updateRowJoranlesProveedores(event, table, nameTable) {
 	let inputs = document.querySelectorAll(".input-group > input");
 	let id =
 		event.target.parentElement.previousElementSibling.firstElementChild
 			.lastElementChild.firstElementChild.value;
-	let newArray = getFromLocalStorage("jornales").map(element => {
+	let newArray = getFromLocalStorage(nameTable).map(element => {
 		if (element.id === id) {
 			inputs.forEach(e => {
 				element[e.name] = e.value;
@@ -163,8 +167,8 @@ function updateRowJoranlesProveedores(event, table) {
 		return element;
 	});
 	let objeto = newArray.find(e => e.id === id);
-	saveInLocalStorage(newArray, "jornales");
-	renderRow(table, id, objeto, "jornales");
+	saveInLocalStorage(newArray, nameTable);
+	renderRow(table, id, objeto, nameTable);
 }
 
 function renderRow(tabla, id, objetoDatos, categoria = "mensuales") {
@@ -285,7 +289,6 @@ function deleteRow(event, nameTable, table) {
 	let idxDataTables;
 	let array = getFromLocalStorage(nameTable);
 	let elementIndex;
-	nameTable === "mensuales";
 	elementIndex = array.findIndex(e => e.id === id);
 	array.splice(elementIndex, 1);
 	saveInLocalStorage(array, nameTable);
@@ -334,9 +337,13 @@ function print(table, nameTable) {
 		generarPdfJornales(table);
 	}
 
+	if (nameTable === "proveedores") {
+		generarPdfProveedores(table);
+	}
+
 	const opciones = {
 		margin: 5,
-		filename: "recibos-mensuales.pdf",
+		filename: `recibos_${nameTable}.pdf`,
 		html2canvas: { scale: 1 },
 		jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
 	};
@@ -537,7 +544,82 @@ async function generarPdfJornales(table) {
 	document.querySelector(".containerPdfs").append(contenidoPdf);
 	document.querySelectorAll(".containerPdfs > div:nth-child(4n)").forEach(e => {
 		e.classList.add("page-break");
-		console.log(e);
+	});
+}
+
+async function generarPdfProveedores(table) {
+	const contenidoPdf = document.createDocumentFragment();
+
+	const arrJornales = table.rows({ selected: true }).data().toArray();
+
+	arrJornales.map(e => {
+		const div = document.createElement("div");
+		div.classList.add("container_proveedores-recibo");
+
+		const {
+			PROVEEDOR,
+			CUIT,
+			FECHA,
+			COMPROBANTE,
+			CONCEPTO,
+			"FORMA DE PAGO": FORMA_PAGO,
+			MONTO,
+		} = e;
+
+		const innerHtmlRecibo = `
+			<div class="rowUno">
+					<img
+						src="imagenes/costa_logo.png"
+						alt=""
+					/>
+				</div>
+
+				<div class="rowDos">
+					<strong>CORTEO S.R.L</strong>
+				</div>
+				<div class="rowTres">
+					<span
+						><em
+							>EGUIA ZANÓN 9695 - VILLA WARCALDE - CÓRDOBA - 5021 <br />
+							CUIT:30714850748</em
+						></span
+					>
+					<span>Fecha de pago:</span>
+					<span>${FECHA ? FECHA : ""}</span>
+				</div>
+				<div class="rowCuatro"><em>PROVEEDOR</em><em>CUIT</em></div>
+				<div class="rowCinco">
+					<span>${PROVEEDOR ? PROVEEDOR : ""}</span>
+					<span>${CUIT ? CUIT : ""}</span>
+				</div>
+				<div class="rowComprobante">
+					<strong><em>COMPROBANTE</em></strong>
+					<span>${COMPROBANTE ? COMPROBANTE : ""}</span>
+				</div>
+				<div class="rowSeis">
+					<span>CONCEPTO</span><span>FORMA DE PAGO</span> <span>MONTO</span>
+				</div>
+				<div class="rowSiete">
+					<span>${CONCEPTO ? CONCEPTO : ""}</span>
+					<span>${FORMA_PAGO ? FORMA_PAGO : ""}</span>
+					<span>${MONTO ? formatingNumberToMoneda(MONTO) : ""}</span>
+				</div>
+				<div class="rowOcho">
+					<strong>TOTAL:</strong> <strong>${
+						MONTO ? formatingNumberToMoneda(MONTO) : ""
+					}</strong>
+				</div>
+				<div class="rowNueve">
+					________________________________________ <em>Firma y Aclaración</em>
+				</div>
+		`;
+		div.innerHTML += innerHtmlRecibo;
+		contenidoPdf.appendChild(div);
+	});
+
+	document.querySelector(".containerPdfs").append(contenidoPdf);
+	document.querySelectorAll(".containerPdfs > div:nth-child(2n)").forEach(e => {
+		e.classList.add("page-break");
 	});
 }
 
