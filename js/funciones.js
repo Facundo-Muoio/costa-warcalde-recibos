@@ -55,12 +55,12 @@ async function checkInputExcel(input, schema, array, table) {
 async function checkInputExcelMensuales(input, schema, array, table) {
 	array = await readExcel(input, schema);
 	if (array === false) {
-		document.getElementById("alertMensaules").hidden = false;
+		document.getElementById("alert").hidden = false;
 	} else {
-		document.getElementById("alertMensuales").hidden = true;
+		document.getElementById("alert").hidden = true;
 		array.map(e => {
 			e.FECHA = convertToDate(e.FECHA);
-			e.id = generateUniqId(e.DNI);
+			e.id = generateRandomId();
 		});
 		saveInLocalStorage(array, "mensuales");
 	}
@@ -69,12 +69,6 @@ async function checkInputExcelMensuales(input, schema, array, table) {
 		table.rows.add(array);
 		table.draw();
 	}
-}
-
-function generateUniqId(dni) {
-	const timestamp = new Date().getTime();
-	uniqueIdCounter++;
-	return `${dni}_${timestamp}_${uniqueIdCounter}`;
 }
 
 function generateRandomId() {
@@ -89,6 +83,7 @@ function editRow(event) {
 		getFromLocalStorage("mensuales").find(e => e.id === id)
 	);
 	let rowIndex = fila.rowIndex;
+	document.querySelector("#modal_mensuales-edicion").showModal();
 	let $inputs = document.querySelectorAll("#modal_mensuales-edicion input");
 	$inputs.forEach((e, i) => {
 		if (e.name === "FECHA") {
@@ -125,12 +120,12 @@ function updatedRow(event, table) {
 	renderRow(table, id, objetoDatos);
 }
 
-function openModal() {
-	document.querySelector(".modal-edit").showModal();
+function openModal(selector) {
+	document.querySelector(selector).showModal();
 }
 
-function closeModal() {
-	document.querySelector(".modal-edit").close();
+function closeModal(selector) {
+	document.querySelector(selector).close();
 }
 
 function editRowJornalesProveedores(event, nameTable) {
@@ -145,7 +140,7 @@ function editRowJornalesProveedores(event, nameTable) {
 	let inputs = document.querySelectorAll(".input-group > input");
 	inputs.forEach((e, i) => {
 		if (e.name === "FECHA") {
-			e.value = values[i].split("/").reverse().join("-");
+			e.value = String(values[i]).split("/").reverse().join("-");
 		} else {
 			e.value = values[i];
 		}
@@ -153,13 +148,18 @@ function editRowJornalesProveedores(event, nameTable) {
 }
 
 function updateRowJoranlesProveedores(event, table, nameTable) {
-	let inputs = document.querySelectorAll(".input-group > input");
+	let inputs = document.querySelectorAll("#modal_edicion .input-group > input");
 	let id =
 		event.target.parentElement.previousElementSibling.firstElementChild
 			.lastElementChild.firstElementChild.value;
+	console.log(getFromLocalStorage(nameTable).find(e => e.id === id));
 	let newArray = getFromLocalStorage(nameTable).map(element => {
 		if (element.id === id) {
 			inputs.forEach(e => {
+				if (e.name === "FECHA") {
+					element[e.name] = String(e.value).split("-").reverse().join("/");
+					return element;
+				}
 				element[e.name] = e.value;
 			});
 			return element;
@@ -167,6 +167,7 @@ function updateRowJoranlesProveedores(event, table, nameTable) {
 		return element;
 	});
 	let objeto = newArray.find(e => e.id === id);
+	console.log(objeto);
 	saveInLocalStorage(newArray, nameTable);
 	renderRow(table, id, objeto, nameTable);
 }
@@ -189,6 +190,42 @@ function renderRow(tabla, id, objetoDatos, categoria = "mensuales") {
 	}
 
 	tabla.row(index).data(objetoDatos).draw();
+}
+
+function addRow(table, nameTable) {
+	const newRow = {};
+	const $inputs = document.querySelectorAll(".modal-edit input");
+	$inputs.forEach(e => {
+		if (e.name === "FECHA") {
+			newRow[e.name] = e.value.split("-").reverse().join("/");
+		} else {
+			newRow[e.name] = e.value;
+		}
+	});
+	newRow.id = generateRandomId();
+	const array = getFromLocalStorage(nameTable);
+	array.push(newRow);
+	saveInLocalStorage(array, nameTable);
+	table.row.add(newRow).draw();
+}
+
+function deleteAllRows(table, nameTable) {
+	const array = getFromLocalStorage(nameTable);
+	array.splice(0, array.length);
+	saveInLocalStorage(array, nameTable);
+	table.clear().draw();
+}
+
+function openModalAdd(selector, nameTable = "mensuales") {
+	let modal = document.querySelector(selector);
+	modal.showModal();
+	if (nameTable === "mensuales") {
+		modal.querySelector(".btn_modal-guardar").disabled = true;
+	}
+	const $inputs = modal.querySelectorAll("input");
+	$inputs.forEach(e => {
+		e.value = "";
+	});
 }
 
 function convertToDate(date) {
@@ -247,36 +284,38 @@ function totalSum(tabla, event) {
 		total;
 }
 
-function validateEmptyInputMensuales(event) {
+function validateEmptyInputMensuales(event, idForm, buttonSelector) {
 	let div = event.target.closest("div");
 	let span = div.querySelector(".emptyError");
-	let button = document.querySelector(".btn_mensuales-guardar");
-	if (event.target.value <= 0) {
-		event.target.classList.add("is-invalid");
-		div.querySelector("label").classList.add("text-danger");
+	let button = document.querySelector(buttonSelector);
+	if (event.target.value <= 0 || event.target.value == false) {
+		div.classList.add("is-invalid");
 		span.textContent = `El campo ${event.target.name.toLowerCase()} es obligatorio`;
 		span.style.display = "inline";
-		button.disabled = true;
 	} else {
-		event.target.classList.remove("is-invalid");
-		div.querySelector("label").classList.remove("text-danger");
+		div.classList.remove("is-invalid");
 		div.querySelector(".emptyError").style.display = "none";
+	}
+	const inputs = document.querySelectorAll(`${idForm} .required`);
+
+	if (
+		inputs[0].value != false &&
+		(inputs[1].value > 0 || inputs[1].value != false) &&
+		inputs[2].value != false
+	) {
 		button.disabled = false;
+	} else {
+		button.disabled = true;
 	}
 }
 
-function removeErrors() {
-	let inputs = document.querySelectorAll("#form_mensuales input");
-	if (document.querySelectorAll("#form_mensuales .emptyError")) {
-		document.querySelectorAll("#form_mensuales .emptyError").forEach(e => {
+function removeErrors(idForm) {
+	if (document.querySelectorAll(`${idForm} .emptyError`)) {
+		document.querySelectorAll(`${idForm} .emptyError`).forEach(e => {
 			e.style.display = "none";
 		});
 
-		document.querySelectorAll("#form_mensuales label").forEach(e => {
-			e.classList.remove("text-danger");
-		});
-
-		inputs.forEach(e => {
+		document.querySelectorAll(`${idForm} div`).forEach(e => {
 			e.classList.remove("is-invalid");
 		});
 	}
@@ -382,11 +421,11 @@ async function generarPdfMensuales(table) {
 		const innerHtmlRecibo = `
 			<div class="cabezera">
 				<div>
-					<img src="imagenes/costa_logo.png" alt="" />
+					<img src="../imagenes/costa_logo.png" alt="" />
 				</div>
 				<h3>CORTEO S.R.L</h3>
 			</div>
-			<div class="filaDos">
+			<div class="filasDos">
 				<span
 					><em
 						>EGUIA ZANÓN 9695 - VILLA WARCALDE - CÓRDOBA - 5021 <br />
@@ -396,13 +435,13 @@ async function generarPdfMensuales(table) {
 				<span>Fecha de pago:</span>
 				<span>${FECHA}</span>
 			</div>
-			<div class="filaTres">
+			<div class="filasTres">
 				<h4>Apellido y Nombre</h4>
 				<h4>DNI</h4>
 				<span>${NOMBRE}</span>
 				<span>${DNI}</span>
 			</div>
-			<div class="filaCuatro">
+			<div class="filasCuatro">
 				<span>Concepto</span>
 				<span>Valor</span>
 				${
@@ -462,26 +501,26 @@ async function generarPdfMensuales(table) {
 						: ""
 				}
 			</div>
-			<div class="filaCinco">
+			<div class="filasCinco">
 				<h4>Total Pesos:</h4>
 				<h4>${formatingNumberToMoneda(TOTAL)}</h4>
 			</div>
-			<div class="filaSeis">
+			<div class="filasSeis">
 				<span>____________________________________</span>
 				<span><em>Firma y Aclaración Empleado</em></span>
 			</div>
-			<div class="filaSiete">
-				<img src="imagenes/costa_logo.png" alt="" />
+			<div class="filasSiete">
+				<img src="../imagenes/costa_logo.png" alt="" />
 			</div>
 	`;
 		div.innerHTML += innerHtmlRecibo;
 		contenidoPdf.appendChild(div);
-		const copy = div.cloneNode(true);
-		copy.classList.add("page-break");
-		contenidoPdf.appendChild(copy);
 	});
 
 	document.querySelector(".containerPdfs").append(contenidoPdf);
+	document.querySelectorAll(".containerPdfs > div:nth-child(2n)").forEach(e => {
+		e.classList.add("page-break");
+	});
 }
 
 async function generarPdfJornales(table) {
@@ -569,7 +608,7 @@ async function generarPdfProveedores(table) {
 		const innerHtmlRecibo = `
 			<div class="rowUno">
 					<img
-						src="imagenes/costa_logo.png"
+						src="../imagenes/costa_logo.png"
 						alt=""
 					/>
 				</div>
@@ -630,7 +669,7 @@ function disabledPrintButton(id, table) {
 }
 
 function alertPdfMensuales() {
-	document.getElementById("alertMensuales").hidden = true;
+	document.getElementById("alert").hidden = true;
 }
 
 function formatedCase(string) {
@@ -842,7 +881,6 @@ export {
 	saveInLocalStorage,
 	getFromLocalStorage,
 	readExcel,
-	generateUniqId,
 	generateRandomId,
 	editRow,
 	editRowJornalesProveedores,
@@ -850,6 +888,7 @@ export {
 	closeModal,
 	updatedRow,
 	updateRowJoranlesProveedores,
+	addRow,
 	convertToDate,
 	formatingNumberToMoneda,
 	formatingMonedaToNumber,
@@ -865,4 +904,6 @@ export {
 	formatedCase,
 	checkInputExcel,
 	checkInputExcelMensuales,
+	deleteAllRows,
+	openModalAdd,
 };

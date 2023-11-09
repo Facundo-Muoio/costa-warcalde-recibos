@@ -95,7 +95,7 @@ const tablaMensuales = $("#tablaMensuales").DataTable({
 		{
 			data: null,
 			defaultContent:
-				"<div><button class='btn-edit btn_mensuales-edit' data-bs-toggle='modal' data-bs-target='#modal_mensuales-edicion'><i class='fa-solid fa-pen-to-square fa-lg  btn_mensuales-edit' style='color: #0b5ed7;'></i></button><button class='btn-delete delete  btn_mensuales-edit'><i class='fa-solid fa-trash fa-lg btn_mensuales-edit' style='color: #dc3545; '></i></button></div>",
+				"<div><button class='btn-edit btn_mensuales-edit' data-bs-toggle='modal' data-bs-target='#modal_mensuales-edicion'><i class='fa-solid fa-pen-to-square fa-lg  btn_mensuales-edit' style='color: #0b5ed7;'></i></button><button class='btn-delete delete  btn_mensuales-delete'><i class='fa-solid fa-trash fa-lg btn_mensuales-delete' style='color: #dc3545; '></i></button></div>",
 			orderable: false,
 			width: "250px",
 		},
@@ -139,6 +139,12 @@ const tablaMensuales = $("#tablaMensuales").DataTable({
 		},
 
 		info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+
+		select: {
+			rows: {
+				_: "%d filas seleccionadas",
+			},
+		},
 	},
 });
 

@@ -118,15 +118,17 @@ select:focus {
 	outline: none;
 }
 
-.container_tableMensuales {
+.container_tableMensuales,
+.container_tableProveedores {
 	margin: auto;
 	width: 100%;
 	max-width: 100%;
-	min-width: 768px;
 	overflow: auto;
 }
 
-#tablaMensuales {
+#tablaMensuales,
+#tablaJornales,
+#tablaProveedores {
 	font-size: 14px;
 }
 
@@ -161,7 +163,9 @@ select:focus {
 	display: flex;
 }
 
-.container-controls_print_excel button {
+#btn_mensuales-imprimir,
+#btn_jornales-imprimir,
+#btn_proveedores-imprimir {
 	background-color: #dc3545;
 	border: 1px solid #dc3545;
 	padding: 0.5rem 0.65rem;
@@ -178,7 +182,8 @@ select:focus {
 
 #labelinputExcelMensuales,
 #labelinputExcelJornales,
-#labelinputExcelProveedores {
+#labelinputExcelProveedores,
+.btn-add {
 	display: inline-block;
 	cursor: pointer;
 	font-size: 1rem;
@@ -188,7 +193,21 @@ select:focus {
 	vertical-align: middle;
 	border: 1px solid green;
 	max-height: 35px;
-	vertical-align: middle;
+}
+
+.btn-add {
+	margin: 0 0.5rem;
+	background-color: #fecd0e;
+	border: 1px solid #fecd0e;
+}
+
+.btn_delete-all {
+	padding: 0.25rem 0.65rem;
+	background-color: #b02a37;
+	color: white;
+	border: 1px solid #b02a37;
+	border-radius: 3px;
+	cursor: pointer;
 }
 
 section {
@@ -236,7 +255,8 @@ button:disabled {
 	opacity: 0.65;
 }
 
-.modal-edit {
+.modal-edit,
+.modal_delete-all {
 	position: relative;
 	margin: auto auto;
 	border: 1px solid white;
@@ -247,7 +267,8 @@ button:disabled {
 	animation: modal-open 0.5s;
 }
 
-.header_modal-edit {
+.header_modal-edit,
+.modal_delete-all header {
 	padding: 1rem;
 	font-size: 1.25rem;
 	border-bottom: 1px solid #dee2e6;
@@ -257,7 +278,8 @@ button:disabled {
 	align-items: center;
 }
 
-.header_modal-edit button {
+.header_modal-edit button,
+.modal_delete-all header button {
 	font-size: 1.5rem;
 	background-color: white;
 	width: 2rem;
@@ -270,11 +292,18 @@ button:disabled {
 	align-items: center;
 }
 
-.header_modal-edit button .fa-xmark {
+.modal_delete-all header,
+.modal_delete-all footer {
+	background-color: white;
+}
+
+.header_modal-edit button .fa-xmark,
+.modal_delete-all header .fa-xmark {
 	transition: ease 0.1s;
 }
 
-.header_modal-edit button .fa-xmark:hover {
+.header_modal-edit button .fa-xmark:hover,
+.modal_delete-all header .fa-xmark:hover {
 	cursor: pointer;
 	color: #202020 !important;
 }
@@ -283,7 +312,8 @@ button:disabled {
 	padding: 1rem;
 }
 
-.modal-edit::backdrop {
+.modal-edit::backdrop,
+.modal_delete-all::backdrop {
 	background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
@@ -338,7 +368,8 @@ button:disabled {
 	color: #ffc107;
 }
 
-.modal-edit footer {
+.modal-edit footer,
+.modal_delete-all footer {
 	padding: 1rem;
 	width: 100%;
 	border-top: 1px solid #dee2e6;
@@ -347,7 +378,8 @@ button:disabled {
 	border-radius: 0px 0px 0.5rem 0.5rem;
 }
 
-.footer_modal-edit button {
+.footer_modal-edit button,
+.modal_delete-all footer button {
 	padding: 0.375rem 0.75rem;
 	border-radius: 0.375rem;
 	border: 1px solid;
@@ -357,14 +389,18 @@ button:disabled {
 	outline: none;
 }
 
-.footer_modal-edit button:first-child {
+.footer_modal-edit button:first-child,
+.modal_delete-all footer button:first-child {
 	background-color: #dc3545;
 	transition: 0.2s;
+	cursor: pointer;
 }
 
-.footer_modal-edit button:nth-child(2) {
+.footer_modal-edit button:nth-child(2),
+.modal_delete-all footer button:nth-child(2) {
 	background-color: #0d6efd;
 	transition: 0.2s;
+	cursor: pointer;
 }
 
 .modal-edit footer,
@@ -373,16 +409,29 @@ button:disabled {
 }
 
 .btn_modal-guardar:hover,
-.btn_modal-cancelar:hover {
-	cursor: pointer;
-}
-
-.btn_modal-guardar:hover {
+.modal_delete-all footer button:nth-child(2):hover {
 	background-color: #0b5ed7 !important;
 }
 
-.btn_modal-cancelar:hover {
+.btn_modal-cancelar:hover,
+.modal_delete-all footer button:nth-child(1):hover {
 	background-color: #b02a37 !important;
+}
+
+.is-invalid input {
+	border: 1px solid red !important;
+}
+
+.is-invalid label {
+	color: red !important;
+	text-align: center;
+	vertical-align: center;
+	top: 28px;
+}
+
+.emptyError {
+	color: red;
+	font-size: 0.875rem;
 }
 
 @keyframes modal-open {
@@ -469,6 +518,160 @@ input[type="number"]::-webkit-outer-spin-button {
 		display: inline-flex;
 		justify-content: end;
 	}
+}
+
+/* // CSS RECIBOS MENSUALES */
+
+.container_mensuales-recibo {
+	width: 600px;
+	margin: auto;
+	border: 2px solid black;
+	margin-bottom: 1px;
+	font-family: "Times New Roman", Times, serif;
+}
+
+.container_mensuales-recibo span,
+.container_mensuales-recibo em {
+	font-family: "Times New Roman", Times, serif;
+}
+
+.container_mensuales-recibo h2,
+.container_mensuales-recibo h3,
+.container_mensuales-recibo h4,
+.container_mensuales-recibo h5,
+.container_mensuales-recibo h6 {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 16px;
+	margin: 0px;
+	font-weight: 700;
+}
+
+.cabezera {
+	border-bottom: 2px solid black;
+	background-color: #ccc;
+}
+
+.cabezera div {
+	width: 100%;
+	height: 66px;
+	background-color: white;
+	display: flex;
+	justify-content: center;
+}
+
+.cabezera img {
+	text-align: center;
+	height: 66px;
+}
+
+.cabezera h3 {
+	text-align: center;
+	padding: 0.5rem;
+	background-color: #ccc;
+	border-top: 2px solid black;
+}
+
+.filasDos {
+	display: flex;
+	height: 52px;
+}
+
+.filasDos,
+.filasTres {
+	border-bottom: 2px solid black;
+}
+
+.filasDos span:not(:last-child) {
+	border-right: 1px solid black;
+}
+
+.filasDos em {
+	font-size: 0.7rem;
+}
+
+.filasDos span:first-child {
+	flex-basis: 60%;
+	vertical-align: center;
+	padding: 0.5rem;
+	font-size: 0.9rem;
+}
+
+.filasDos span:not(:nth-child(1)) {
+	padding: 1rem;
+	flex-basis: 23%;
+	text-align: center;
+	vertical-align: center;
+}
+
+.filasTres {
+	display: grid;
+	grid-template-columns: 70% 30%;
+	height: 42.2px;
+}
+
+.filasTres h4 {
+	text-align: center;
+	border-bottom: 1px solid black;
+	padding: 0.1rem;
+	height: 22.19px;
+}
+
+.filasTres h4:first-child,
+.filasTres span:nth-child(3) {
+	border-right: 1px solid black;
+}
+
+.filasTres span {
+	text-align: center;
+	height: 18px;
+}
+
+.filasCuatro,
+.filasCinco {
+	display: grid;
+	grid-template-columns: 80% 20%;
+}
+
+.filasCinco {
+	background-color: #ccc;
+	border-bottom: 2px solid black;
+}
+
+.filasCuatro span {
+	border-bottom: 1px solid black;
+	padding-left: 0.5rem;
+	font-size: 14px;
+	height: 19px;
+}
+
+.filasCinco h4 {
+	padding: 0.15rem 0.5rem;
+}
+
+.filasCuatro span:not(:nth-child(even)),
+.filasCinco h4:not(:last-child) {
+	border-right: 1px solid black;
+}
+
+.filasSeis {
+	display: flex;
+	height: 80px;
+	justify-content: space-around;
+	align-items: end;
+}
+
+.filasSeis {
+	padding-bottom: 0.25rem;
+	border-bottom: 2px solid black;
+}
+
+.filasSiete {
+	display: flex;
+	justify-content: center;
+}
+
+.filasSiete img {
+	height: 66px;
 }
 
 /* CSS RECIBOS JORNALES	 */

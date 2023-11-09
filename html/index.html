@@ -30,7 +30,7 @@
 
   <!-- Modal de edición filas -->
 
-  <dialog class="modal-edit">
+  <dialog class="modal-edit" id="modal_mensuales-edicion">
       <header class="header_modal-edit">
         <h5>Edición</h5>
         <button class="btn_modal-close" aria-label="Close">
@@ -40,16 +40,19 @@
       <main class="main_modal-edit">
         <form  id="form_mensuales" method="dialog">
          <div class="input-group">
-           <input type="text" id="nombre" placeholder=" " name="NOMBRE" required>
+           <input type="text" id="nombre" class="required" placeholder=" " name="NOMBRE" required>
            <label for="nombre">Nombre y Apellido</label>
+           <span class="emptyError"></span>
          </div>
           <div class="input-group">
-            <input type="number" id="dni" placeholder=" " name="DNI" required>
+            <input type="number" id="dni" class="required" placeholder=" " name="DNI" required>
             <label for="dni">DNI</label>
+            <span class="emptyError"></span>
           </div>
          <div class="input-group">
-           <input type="date" id="fecha" placeholder=" " name="FECHA" value="" required>
+           <input type="date" id="fecha" class="required" placeholder=" " name="FECHA" value="" required>
            <label for="fecha"></label>
+           <span class="emptyError"></span>
          </div>
           <div class="input-group">
             <input type="number" id="haberes_mes" placeholder=" " name="HABERES MES" >
@@ -83,8 +86,8 @@
             <input type="number" id="aguinaldo" placeholder=" " name="AGUINALDO" >
             <label for="aguinaldo">Aguinaldo</label>
           </div>
-          <div class="input-group hidde">
-            <input type="string" id="total" placeholder=" " name="TOTAL" >
+          <div class="input-group">
+            <input type="string" id="total" placeholder=" " name="TOTAL"  disabled>
             <label for="total">TOTAL</label>
           </div>
         </form>
@@ -94,6 +97,95 @@
         <button   class="btn_modal-guardar btn_mensuales-guardar">Guardar</button>
       </footer>
   </dialog>
+
+  <!-- Modal añadir nueva fila -->
+
+  <dialog class="modal-edit modal-add" id="modal_mensuales-añadir">
+      <header class="header_modal-edit">
+        <h5>Añadir</h5>
+        <button class="btn_modal-close" aria-label="Close">
+          <i class="fa-solid fa-xmark" style="color: #E7E7E7;"></i>
+        </button>
+      </header>
+      <main class="main_modal-edit">
+        <form  id="form_mensuales-add" method="dialog">
+         <div class="input-group">
+           <input type="text" id="nombre" class="required" placeholder=" " name="NOMBRE" required>
+           <label for="nombre">Nombre y Apellido</label>
+           <span class="emptyError"></span>
+         </div>
+          <div class="input-group">
+            <input type="number" id="dni" class="required" placeholder=" " name="DNI" required>
+            <label for="dni">DNI</label>
+            <span class="emptyError"></span>
+          </div>
+         <div class="input-group">
+           <input type="date" id="fecha" class="required" placeholder=" " name="FECHA" value="" required>
+           <label for="fecha"></label>
+           <span class="emptyError"></span>
+         </div>
+          <div class="input-group">
+            <input type="number" id="haberes_mes" placeholder=" " name="HABERES MES" >
+            <label for="haberes_mes">Haberes Mes</label>
+          </div>
+          <div class="input-group"> 
+            <input type="number" id="horas_extras" placeholder=" " name="HORAS EXTRAS" >
+            <label for="horas_extras">Horas Extras</label>
+          </div>
+          <div class="input-group">
+            <input type="number" id="feriado" placeholder=" " name="FERIADO" >
+            <label for="feriado">Feriado</label>
+          </div>
+          <div class="input-group">
+            <input type="number" id="vacaciones" placeholder=" " name="VACACIONES" >
+            <label for="vacaciones">Vacaciones</label>
+          </div>
+          <div class="input-group">
+            <input type="number" id="almuerzo" placeholder=" " name="ALMUERZO" >
+            <label for="almuerzo">Almuerzo</label>
+          </div>
+          <div class="input-group">
+            <input type="number" id="adelanto" placeholder=" " name="ADELANTO" >
+            <label for="adelanto">Adelanto</label>
+          </div>
+          <div class="input-group">
+            <input type="number" id="vacaciones_tomadas" placeholder=" " name="VACIONES TOMADAS" >
+            <label for="vacaciones_tomadas">Vacaciones Tomadas</label>
+          </div>
+          <div class="input-group">
+            <input type="number" id="aguinaldo" placeholder=" " name="AGUINALDO" >
+            <label for="aguinaldo">Aguinaldo</label>
+          </div>
+          <div class="input-group">
+            <input type="string" id="total" placeholder=" " name="TOTAL"  disabled>
+            <label for="total">TOTAL</label>
+          </div>
+        </form>
+      </main>
+      <footer class="footer_modal-edit">
+        <button class="btn_modal-cancelar">Cancelar</button>
+        <button   class="btn_modal-guardar btn_mensuales-añadir">Guardar</button>
+      </footer>
+  </dialog>
+
+  <!-- Modal eliminar todas las filas -->
+  <dialog class="modal_delete-all">
+    <header>
+      <h5>Eliminar</h5>
+      <button class="btn_modal-delete-close">
+        <i class="fa-solid fa-xmark" style="color: #E7E7E7;"></i>
+      </button>
+    </header>
+    <main>
+      <p>¿Estas seguro que quieres eliminar todos los elementos de la tabla?</p>
+    </main>
+    <footer>
+      <button class="btn_modal-delete-cancelar">Cancelar</button>
+      <button class="btn_mensuales-eliminar-todos">Eliminar</button>
+    </footer>
+  </dialog>
+
+
 
 	<div class="container">
       <header>
@@ -109,7 +201,7 @@
       </header>
       <main>
 
-      <section class="error-section" hidden>
+      <section id="alert" class="error-section" hidden>
           <article>
             <h3>Uups! tenemos un problema.</h3>
               <br>
@@ -213,7 +305,9 @@
 								style="color: #ffffff"
 							></i>
 					</label>
-					<input type="file" name="inputExcel" id="inputExcelMensuales" />
+					<input type="file" name="inputExcel" id="inputExcelMensuales"  accept=".xls, .xlsx" />
+          <button id="btn_mensuales-añadir" class="btn-add"><strong><i class="fa-solid fa-plus" style="color: #000;"></i></strong></button>
+          <button id="btn_mensuales-eliminarTodos" class="btn_delete-all"><strong>Borrar Todos</strong></button>
       </div>
 
        <div class="container_tableMensuales">

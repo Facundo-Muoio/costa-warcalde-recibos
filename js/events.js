@@ -16,6 +16,9 @@ import {
 	checkInputExcel,
 	checkInputExcelMensuales,
 	updateRowJoranlesProveedores,
+	addRow,
+	deleteAllRows,
+	openModalAdd,
 } from "./funciones.js";
 
 import {
@@ -55,20 +58,17 @@ window.addEventListener("DOMContentLoaded", e => {
 	}
 
 	window.addEventListener("click", e => {
-		if (
-			e.target.matches(".btn_mensuales-edit") ||
-			e.target.matches(".btn_mensuales-edit")
-		) {
+		if (e.target.matches(".btn_mensuales-edit")) {
 			editRow(e);
 		}
 
 		if (e.target.matches(".btn_jornales-edit")) {
-			openModal();
+			openModal(".modal-edit");
 			editRowJornalesProveedores(e, "jornales");
 		}
 
 		if (e.target.matches(".btn_proveedores-edit")) {
-			openModal();
+			openModal(".modal-edit");
 			editRowJornalesProveedores(e, "proveedores");
 		}
 
@@ -76,26 +76,42 @@ window.addEventListener("DOMContentLoaded", e => {
 			e.target.matches(".btn_modal-cancelar") ||
 			e.target.matches(".fa-xmark")
 		) {
-			closeModal();
+			closeModal(".modal-edit");
+		}
+
+		if (
+			e.target.matches(".modal-add .btn_modal-cancelar") ||
+			e.target.matches(" .modal-add .fa-xmark")
+		) {
+			closeModal(".modal-add");
+		}
+
+		if (
+			e.target.matches(".btn_modal-delete-close") ||
+			e.target.matches(".btn_modal-delete-close .fa-xmark") ||
+			e.target.matches(".btn_modal-delete-cancelar")
+		) {
+			closeModal(".modal_delete-all");
 		}
 
 		if (e.target.matches(".btn_mensuales-guardar")) {
 			e.preventDefault();
 			updatedRow(e, tablaMensuales);
+			closeModal(".modal-edit");
 		}
 
 		if (e.target.matches(".btn_jornales-guardar")) {
 			updateRowJoranlesProveedores(e, tableJornales, "jornales");
-			closeModal();
+			closeModal(".modal-edit");
 		}
 
 		if (e.target.matches(".btn_proveedores-guardar")) {
 			updateRowJoranlesProveedores(e, tableProveedores, "proveedores");
-			closeModal();
+			closeModal(".modal-edit");
 		}
 
 		if (
-			e.target.matches("#tablaMensuales .delete") ||
+			e.target.matches(".btn_mensuales-delete") ||
 			e.target.matches("#tablaMensuales .fa-trash")
 		) {
 			deleteRow(e, "mensuales", tablaMensuales);
@@ -110,11 +126,19 @@ window.addEventListener("DOMContentLoaded", e => {
 		}
 
 		if (
-			e.target.matches(".btn_mensaules-cancelar") ||
-			e.target.matches(".btn_mensuales-x")
+			e.target.matches("#modal_mensuales-edicion .btn_modal-cancelar") ||
+			e.target.matches("#modal_mensuales-edicion .fa-xmark")
 		) {
-			removeErrors();
+			removeErrors("#form_mensuales");
 		}
+
+		if (
+			e.target.matches("#modal_mensuales-añadir .btn_modal-cancelar") ||
+			e.target.matches("#modal_mensuales-añadir .fa-xmark")
+		) {
+			removeErrors("#form_mensuales-add");
+		}
+
 		if (
 			e.target.matches("#btn_mensuales-imprimir") ||
 			e.target.matches("#btn_mensuales-imprimir .fa-print")
@@ -138,6 +162,64 @@ window.addEventListener("DOMContentLoaded", e => {
 
 		if (e.target.matches("#retryMensuales")) {
 			alertPdfMensuales();
+		}
+
+		if (
+			e.target.matches("#btn_mensuales-añadir") ||
+			e.target.matches("#btn_mensuales-añadir .fa-plus")
+		) {
+			openModalAdd("#modal_mensuales-añadir");
+		}
+
+		if (
+			e.target.matches("#btn_jornales-añadir") ||
+			e.target.matches("#btn_jornales-añadir .fa-plus")
+		) {
+			openModalAdd("#modal_jornales-añadir", "jornales");
+		}
+
+		if (
+			e.target.matches("#btn_proveedores-añadir") ||
+			e.target.matches("#btn_proveedores-añadir .fa-plus")
+		) {
+			openModalAdd("#modal_proveedores-añadir", "proveedores");
+		}
+
+		if (e.target.matches(".btn_mensuales-añadir")) {
+			addRow(tablaMensuales, "mensuales");
+			closeModal(".modal-add");
+		}
+
+		if (e.target.matches(".btn_jornales-añadir")) {
+			addRow(tableJornales, "jornales");
+			closeModal(".modal-add");
+		}
+
+		if (e.target.matches(".btn_proveedores-añadir")) {
+			addRow(tableProveedores, "proveedores");
+			closeModal(".modal-add");
+		}
+
+		if (
+			e.target.matches(".btn_delete-all strong") ||
+			e.target.matches(".btn_delete-all")
+		) {
+			openModal(".modal_delete-all");
+		}
+
+		if (e.target.matches(".btn_mensuales-eliminar-todos")) {
+			deleteAllRows(tablaMensuales, "mensuales");
+			closeModal(".modal_delete-all");
+		}
+
+		if (e.target.matches(".btn_jornales-eliminar-todos")) {
+			deleteAllRows(tableJornales, "jornales");
+			closeModal(".modal_delete-all");
+		}
+
+		if (e.target.matches(".btn_proveedores-eliminar-todos")) {
+			deleteAllRows(tableProveedores, "proveedores");
+			closeModal(".modal_delete-all");
 		}
 	});
 
@@ -169,19 +251,38 @@ window.addEventListener("DOMContentLoaded", e => {
 			);
 		}
 
-		if (e.target.matches("#form_mensuales .form-control")) {
+		if (
+			e.target.matches("#form_mensuales input") ||
+			e.target.matches("#form_mensuales-add input")
+		) {
 			totalSum("mensuales", e);
 		}
 
 		if (
-			e.target.matches("#form_mensuales input[name='NOMBRE']") ||
+			e.target.matches("#form_mensuales input[name='NOMBRE'] ") ||
 			e.target.matches("#form_mensuales input[name='DNI']") ||
 			e.target.matches("#form_mensuales input[name='FECHA']")
 		) {
-			validateEmptyInputMensuales(e);
+			validateEmptyInputMensuales(
+				e,
+				"#form_mensuales",
+				".btn_mensuales-guardar"
+			);
 		}
 
-		if (e.target.matches("#mesuales_checkbox-all")) {
+		if (
+			e.target.matches("#form_mensuales-add input[name='NOMBRE']") ||
+			e.target.matches("#form_mensuales-add input[name='DNI']") ||
+			e.target.matches("#form_mensuales-add input[name='FECHA']")
+		) {
+			validateEmptyInputMensuales(
+				e,
+				"#form_mensuales-add",
+				".btn_mensuales-añadir"
+			);
+		}
+
+		if (e.target.matches("#mensuales_checkbox-all")) {
 			selectAllRows(e, tablaMensuales);
 			disabledPrintButton("#btn_mensuales-imprimir", tablaMensuales);
 		}

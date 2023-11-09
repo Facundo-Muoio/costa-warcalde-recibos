@@ -30,7 +30,7 @@
 
   <!-- Modal de edición filas -->
 
-  <dialog class="modal-edit">
+  <dialog class="modal-edit" id="modal_edicion">
       <header class="header_modal-edit">
         <h5>Edición</h5>
         <button class="btn_modal-close" aria-label="Close">
@@ -64,15 +64,78 @@
             <label for="sueldo">Sueldo</label>
           </div>
           <div class="input-group hidde">
-            <input type="string" id="id" placeholder=" " name="ID" >
+            <input type="string" id="id" placeholder=" " name="id" >
             <label for="id">ID</label>
           </div>
         </form>
       </main>
       <footer class="footer_modal-edit">
         <button class="btn_modal-cancelar">Cancelar</button>
-        <button   class="btn_modal-guardar btn_jornales-guardar">Guardar</button>
+        <button class="btn_modal-guardar btn_jornales-guardar">Guardar</button>
       </footer>
+  </dialog>
+
+   <!-- Modal añadir nueva fila -->
+  <dialog class="modal-edit modal-add" id="modal_jornales-añadir">
+      <header class="header_modal-edit">
+        <h5>Añadir</h5>
+        <button class="btn_modal-close" aria-label="Close">
+          <i class="fa-solid fa-xmark" style="color: #E7E7E7;"></i>
+        </button>
+      </header>
+      <main class="main_modal-edit">
+        <form  id="form_jornales" method="dialog">
+         <div class="input-group">
+           <input type="text" id="nombre" placeholder=" " name="NOMBRE" >
+           <label for="nombre">Nombre y Apellido</label>
+         </div>
+          <div class="input-group">
+            <input type="number" id="dni" placeholder=" " name="DNI" >
+            <label for="dni">DNI</label>
+          </div>
+         <div class="input-group">
+           <input type="date" id="fecha" placeholder=" " name="FECHA" value="" >
+           <label for="fecha"></label>
+         </div>
+          <div class="input-group">
+            <input type="text" id="unidad_de_negocio" placeholder=" " name="UNIDAD DE NEGOCIO" >
+            <label for="unidad_de_negocio">Unidad De Negocio</label>
+          </div>
+          <div class="input-group"> 
+            <input type="number" id="horas_trabajadas" placeholder=" " name="HORAS TRABAJADAS" >
+            <label for="horas_trabajadas">Horas Trabajadas</label>
+          </div>
+          <div class="input-group">
+            <input type="number" id="sueldo" placeholder=" " name="SUELDO" >
+            <label for="sueldo">Sueldo</label>
+          </div>
+          <div class="input-group hidde">
+            <input type="string" id="id" placeholder=" " name="id" >
+            <label for="id">ID</label>
+          </div>
+        </form>
+      </main>
+      <footer class="footer_modal-edit">
+        <button class="btn_modal-cancelar">Cancelar</button>
+        <button   class="btn_modal-guardar btn_jornales-añadir">Guardar</button>
+      </footer>
+  </dialog>
+
+  <!-- Modal eliminar todas las filas -->
+  <dialog class="modal_delete-all">
+    <header>
+      <h5>Eliminar</h5>
+      <button class="btn_modal-delete-close">
+        <i class="fa-solid fa-xmark" style="color: #E7E7E7;"></i>
+      </button>
+    </header>
+    <main>
+      <p>¿Estas seguro que quieres eliminar todos los elementos de la tabla?</p>
+    </main>
+    <footer>
+      <button class="btn_modal-delete-cancelar">Cancelar</button>
+      <button class="btn_jornales-eliminar-todos">Eliminar</button>
+    </footer>
   </dialog>
 
 	<div class="container">
@@ -89,7 +152,7 @@
       </header>
       <main>
 
-      <section class="error-section" hidden>
+      <section id="alert" class="error-section" hidden>
           <article>
             <h3>Uups! tenemos un problema.</h3>
               <br>
@@ -182,7 +245,9 @@
 								style="color: #ffffff"
 							></i>
 					</label>
-					<input type="file" name="inputExcel" id="inputExcelJornales" />
+					<input type="file" name="inputExcel" id="inputExcelJornales" accept=".xls, .xlsx"/>
+          <button id="btn_jornales-añadir" class="btn-add"><strong><i class="fa-solid fa-plus" style="color: #000;"></i></strong></button>
+          <button id="btn_jornales-eliminarTodos" class="btn_delete-all"><strong>Borrar Todos</strong></button>
       </div>
 
         <table id="tablaJornales">

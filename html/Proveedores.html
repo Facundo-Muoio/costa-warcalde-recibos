@@ -30,7 +30,7 @@
 
   <!-- Modal de edición filas -->
 
-  <dialog class="modal-edit">
+  <dialog class="modal-edit" id="modal_edicion">
       <header class="header_modal-edit">
         <h5>Edición</h5>
         <button class="btn_modal-close" aria-label="Close">
@@ -41,11 +41,11 @@
         <form  id="form_proveedores" method="dialog">
          <div class="input-group">
            <input type="text" id="proveedor" placeholder=" " name="PROVEEDOR" >
-           <label for="proveedor">Nombre y Apellido</label>
+           <label for="proveedor">Proveedor</label>
          </div>
           <div class="input-group">
             <input type="number" id="cuit" placeholder=" " name="CUIT" >
-            <label for="cuit">DNI</label>
+            <label for="cuit">CUIT</label>
           </div>
          <div class="input-group">
            <input type="date" id="fecha" placeholder=" " name="FECHA" value="" >
@@ -53,22 +53,22 @@
          </div>
          <div class="input-group">
             <input type="text" id="comprobante" placeholder=" " name="COMPROBANTE" >
-            <label for="comprobante">Sueldo</label>
+            <label for="comprobante">Comprobante</label>
           </div>
           <div class="input-group">
             <input type="text" id="concepto" placeholder=" " name="CONCEPTO" >
-            <label for="concepto">Sueldo</label>
+            <label for="concepto">Concepto</label>
           </div>
           <div class="input-group">
             <input type="text" id="forma_pago" placeholder=" " name="FORMA DE PAGO" >
-            <label for="forma_pago">Sueldo</label>
+            <label for="forma_pago">Forma de Pago</label>
           </div>
           <div class="input-group">
             <input type="number" id="monto" placeholder=" " name="MONTO" >
-            <label for="monto">Sueldo</label>
+            <label for="monto">Monto</label>
           </div>
           <div class="input-group hidde">
-            <input type="string" id="id" placeholder=" " name="ID" >
+            <input type="string" id="id" placeholder=" " name="id" >
             <label for="id">ID</label>
           </div>
         </form>
@@ -77,6 +77,73 @@
         <button class="btn_modal-cancelar">Cancelar</button>
         <button   class="btn_modal-guardar btn_proveedores-guardar">Guardar</button>
       </footer>
+  </dialog>
+
+   <!-- Modal añadir nueva fila -->
+  <dialog class="modal-edit modal-add" id="modal_proveedores-añadir">
+      <header class="header_modal-edit">
+        <h5>Añadir</h5>
+        <button class="btn_modal-close" aria-label="Close">
+          <i class="fa-solid fa-xmark" style="color: #E7E7E7;"></i>
+        </button>
+      </header>
+      <main class="main_modal-edit">
+        <form  id="form_proveedores" method="dialog">
+          <div class="input-group">
+           <input type="text" id="proveedor" placeholder=" " name="PROVEEDOR" >
+           <label for="proveedor">Proveedor</label>
+         </div>
+          <div class="input-group">
+            <input type="number" id="cuit" placeholder=" " name="CUIT" >
+            <label for="cuit">CUIT</label>
+          </div>
+         <div class="input-group">
+           <input type="date" id="fecha" placeholder=" " name="FECHA" value="" >
+           <label for="fecha"></label>
+         </div>
+         <div class="input-group">
+            <input type="text" id="comprobante" placeholder=" " name="COMPROBANTE" >
+            <label for="comprobante">Comprobante</label>
+          </div>
+          <div class="input-group">
+            <input type="text" id="concepto" placeholder=" " name="CONCEPTO" >
+            <label for="concepto">Concepto</label>
+          </div>
+          <div class="input-group">
+            <input type="text" id="forma_pago" placeholder=" " name="FORMA DE PAGO" >
+            <label for="forma_pago">Forma de Pago</label>
+          </div>
+          <div class="input-group">
+            <input type="number" id="monto" placeholder=" " name="MONTO" >
+            <label for="monto">Monto</label>
+          </div>
+          <div class="input-group hidde">
+            <input type="string" id="id" placeholder=" " name="id" >
+            <label for="id">ID</label>
+          </div>
+        </form>
+      </main>
+      <footer class="footer_modal-edit">
+        <button class="btn_modal-cancelar">Cancelar</button>
+        <button   class="btn_modal-guardar btn_proveedores-añadir">Guardar</button>
+      </footer>
+  </dialog>
+
+  <!-- Modal eliminar todas las filas -->
+  <dialog class="modal_delete-all">
+    <header>
+      <h5>Eliminar</h5>
+      <button class="btn_modal-delete-close">
+        <i class="fa-solid fa-xmark" style="color: #E7E7E7;"></i>
+      </button>
+    </header>
+    <main>
+      <p>¿Estas seguro que quieres eliminar todos los elementos de la tabla?</p>
+    </main>
+    <footer>
+      <button class="btn_modal-delete-cancelar">Cancelar</button>
+      <button class="btn_proveedores-eliminar-todos">Eliminar</button>
+    </footer>
   </dialog>
 
 	<div class="container">
@@ -93,7 +160,7 @@
       </header>
       <main>
 
-      <section class="error-section" hidden>
+      <section id="alert" class="error-section" hidden>
           <article>
             <h3>Uups! tenemos un problema.</h3>
               <br>
@@ -138,7 +205,7 @@
                 </strong> debe corresponderse como se señala a continuación:
               </span>   
           </summary>
-          <img src="../imagenes/formato_proveedores.png" alt="imagen formato de columnas jornales"> 
+          <img src="../imagenes/formato_proveedores.png" alt="imagen formato de columnas proveedores"> 
         </details>
         </li>
 
@@ -151,7 +218,7 @@
                 </strong> (mes, día y año)
               </span>
           </summary>
-          <img src="../imagenes/fecha_jornales.png" alt="imagen con el formato fecha de los jornales">
+          <img src="../imagenes/fecha_jornales.png" alt="imagen con el formato fecha de los proveedores">
         </details>
         </li>
 
@@ -168,7 +235,7 @@
                   hallarse en la hoja número uno.
                 </span>
             </summary>
-            <img src="../imagenes/hoja_proveedores.png" alt="imagne con la hoja seleccionada de jornales">
+            <img src="../imagenes/hoja_proveedores.png" alt="imagenes con la hoja seleccionada de proveedores">
           </details>
         </li>
 
@@ -186,27 +253,31 @@
 								style="color: #ffffff"
 							></i>
 					</label>
-					<input type="file" name="inputExcel" id="inputExcelProveedores" />
+					<input type="file" name="inputExcel" id="inputExcelProveedores" accept=".xls, .xlsx" />
+          <button id="btn_proveedores-añadir" class="btn-add"><strong><i class="fa-solid fa-plus" style="color: #000;"></i></strong></button>
+          <button id="btn_proveedores-eliminarTodos" class="btn_delete-all"><strong>Borrar Todos</strong></button>
       </div>
 
-        <table id="tablaProveedores">
-          <thead>
-            <th>Proveedor</th>
-            <th>Cuit</th>
-            <th>Fecha</th>
-            <th>Comprobante</th>
-            <th>Concepto</th>
-            <th>Forma de Pago</th>
-            <th>Monto</th>
-            <th><input type="checkbox" name="" id="proveedores_checkbox-all" 	class="tables_checkbox-all"></th>
-            <th>Acciones</th>
-            <th class="hidde">id</th>
-          </thead>
-          <tbody>
-      
-          </tbody>
-          <tfoot></tfoot>
-        </table>
+       <div class="container_tableProveedores">
+         <table id="tablaProveedores">
+           <thead>
+             <th>Proveedor</th>
+             <th>Cuit</th>
+             <th>Fecha</th>
+             <th>Comprobante</th>
+             <th>Concepto</th>
+             <th>Forma de Pago</th>
+             <th>Monto</th>
+             <th><input type="checkbox" name="" id="proveedores_checkbox-all" 	class="tables_checkbox-all"></th>
+             <th>Acciones</th>
+             <th class="hidde">id</th>
+           </thead>
+           <tbody>
+        
+           </tbody>
+           <tfoot></tfoot>
+         </table>
+       </div>
         
         <div class="containerPdfs"></div>
 

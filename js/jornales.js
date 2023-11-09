@@ -109,6 +109,12 @@ const tableJornales = new $("#tablaJornales").DataTable({
 		},
 
 		info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+
+		select: {
+			rows: {
+				_: "%d filas seleccionadas",
+			},
+		},
 	},
 });
 
