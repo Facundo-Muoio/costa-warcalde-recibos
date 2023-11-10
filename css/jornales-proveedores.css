@@ -255,6 +255,29 @@ button:disabled {
 	opacity: 0.65;
 }
 
+dialog::-webkit-scrollbar {
+	width: 12px;
+	display: none;
+}
+
+dialog::-webkit-scrollbar:hover {
+	display: inline-block;
+}
+
+dialog::-webkit-scrollbar-track {
+	background-color: #f1f1f1;
+	border-radius: 6px;
+}
+
+dialog::-webkit-scrollbar-thumb {
+	color: #ddd;
+	border-radius: 6px;
+}
+
+.modal-edit::-webkit-scrollbar-thumb:hover {
+	color: #ffc107;
+}
+
 .modal-edit,
 .modal_delete-all {
 	position: relative;
