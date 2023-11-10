@@ -152,7 +152,6 @@ function updateRowJoranlesProveedores(event, table, nameTable) {
 	let id =
 		event.target.parentElement.previousElementSibling.firstElementChild
 			.lastElementChild.firstElementChild.value;
-	console.log(getFromLocalStorage(nameTable).find(e => e.id === id));
 	let newArray = getFromLocalStorage(nameTable).map(element => {
 		if (element.id === id) {
 			inputs.forEach(e => {
@@ -167,7 +166,6 @@ function updateRowJoranlesProveedores(event, table, nameTable) {
 		return element;
 	});
 	let objeto = newArray.find(e => e.id === id);
-	console.log(objeto);
 	saveInLocalStorage(newArray, nameTable);
 	renderRow(table, id, objeto, nameTable);
 }
